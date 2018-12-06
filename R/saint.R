@@ -16,9 +16,12 @@
 #' plot(spid.graph)
 #' 
 #' 
-saint<-function(manyglm.obj,n.lambda=100,n.samp=200)
+saint<-function(manyglm.obj,n.lambda=100,n.samp=200,seed=1)
 {
-  set.seed(1)
+  
+  #always same result unless specified otherwise
+  set.seed(seed)
+  #starting values for lambda
   current=c(-16,seq(-10,10,length.out=20))
   res=simulate.res.S(manyglm.obj,n.res=n.samp)
   k.frac=full.graph.many(manyglm.obj,10^current,res)$k.frac

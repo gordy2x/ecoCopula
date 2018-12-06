@@ -27,7 +27,6 @@ plot.saint=function(obj,P=NULL)
   posneg[posneg > 0] = "light blue"
   posneg[posneg < 0] = "pink"
   
-  labs=colnames(obj$best.graph$Y)
   
   if(is.null(P)){
     P = sna::gplot.layout.fruchtermanreingold(Graph, list())

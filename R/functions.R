@@ -163,7 +163,7 @@ full.graph.many<- function(manyglm.obj,lambdas,res)
 simulate.res.S<-function(manyglm.obj,n.res=200){
   many.output=list(manyglm.obj)[rep(1,n.res)]
   res=plyr::llply(many.output,residuals)#this will not work for ordinal data at all
-  S.list=plyr::llply(res,function(x) cov2cor(cov0(x)))
+  S.list=plyr::llply(res,function(x) cov2cor(cov0(x)))#cov0 assumes 0 mean
   return(list(res=res,S.list=S.list))
 }
 
