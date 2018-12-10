@@ -21,14 +21,17 @@ saint<-function(manyglm.obj,n.lambda=100,n.samp=200,seed=1)
   
   #always same result unless specified otherwise
   set.seed(seed)
-  #starting values for lambda
+  #starting values for log10 lambda
   current=c(-16,seq(-10,10,length.out=20))
+  #simulate full set of residulas n.samp times
   res=simulate.res.S(manyglm.obj,n.res=n.samp)
+  #proportion of non-zero cond indep
   k.frac=full.graph.many(manyglm.obj,10^current,res)$k.frac
+  #which lambdas give full and empty matrices
   new.min=max(which(k.frac==1))
   new.max=min(which(k.frac==0))
 
-  
+  #now sequence of lambda values, between the two
   final=c(-16,seq(current[new.min],current[new.max],length.out=n.lambda))
   ag=full.graph.many(manyglm.obj,10^final,res)
   k.frac=ag$k.frac

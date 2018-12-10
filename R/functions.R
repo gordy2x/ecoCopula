@@ -2,7 +2,7 @@
 
 
 
-#other functions
+#mid level functions
 
 glasso_opt=function(rho,S.list,full=FALSE,quick=FALSE,
                     start="cold",cov.last=NULL,prec.last=NULL){
@@ -69,11 +69,7 @@ glasso_opt=function(rho,S.list,full=FALSE,quick=FALSE,
 
 
 
-L.icov.prop=function(S,Theta)
-{
-  out=exp(-1/2*(sum(S*(Theta-diag(dim(Theta)[1])))))#the last bit is the trace 
-  return(out)
-}
+
 
 
 
@@ -117,12 +113,13 @@ approx.graph<- function(manyglm.obj,lambdas,calc.lik=FALSE,quick=quick)
 }
 
 
+
 full.graph.many<- function(manyglm.obj,lambdas,res)
 {
   S.list=res$S.list
   res=res$res
   P=dim(S.list[[1]])[1]
-  N=dim(manyglm.obj$y)[1]
+  N=dim(manyglm.obj$fitted.values)[1]
   
   Th.out=Sig.out=list()
   n.lam=length(lambdas)
@@ -150,6 +147,7 @@ full.graph.many<- function(manyglm.obj,lambdas,res)
   }
   k.frac=k/(P*(P-1)/2)
   BIC.out=logL=NULL
+  
 
   logL=plyr::laply(Th.out,ll.icov.all,S.list=S.list,n=N)
   BIC.out=k*log(N)-2*logL#-sum(manyglm.obj$two.loglike)
@@ -159,10 +157,14 @@ full.graph.many<- function(manyglm.obj,lambdas,res)
   
 }
 
+#low level functions
 
 simulate.res.S<-function(manyglm.obj,n.res=200){
   many.output=list(manyglm.obj)[rep(1,n.res)]
   res=plyr::llply(many.output,residuals)#this will not work for ordinal data at all
+  if(min(res[[1]])>-1e-5){#{residuals function for manyany currently output on uniform scale
+    res=plyr::llply(res,qnorm)
+  }
   S.list=plyr::llply(res,function(x) cov2cor(cov0(x)))#cov0 assumes 0 mean
   return(list(res=res,S.list=S.list))
 }
@@ -200,10 +202,10 @@ ll.icov.all<-function(theta,S.list,n){
   for(i in 1:K){
     scatter=(n-1)*S.list[[i]]
     inside=inside+exp(-sum(diag(scatter%*%(theta-diag(P))))/2)
-    #notice theta is sigma inverse hence the first minus is a plus
   }
   
   ll=-n/2*log(2*pi) +n/2*log(det(theta)) +log(inside/n)
+  #notice theta is sigma inverse hence the first minus is a plus
 }
 
 
@@ -213,3 +215,11 @@ print.saint=function(obj)
   print("Precision matrix")
   print(obj$best.graph$prec)
 }
+
+L.icov.prop=function(S,Theta)
+{
+  out=exp(-1/2*(sum(S*(Theta-diag(dim(Theta)[1])))))#the last bit is the trace 
+  return(out)
+}
+
+
