@@ -28,3 +28,4 @@ tmp/
 
 # Brunch output folder.
 public/
+.Rproj.user

@@ -4,17 +4,19 @@
 \alias{saint}
 \title{Fit gaussian copula graphical lasso, chose lambda with BIC.}
 \usage{
-saint(manyglm.obj, n.lambda = 100, n.samp = 200)
+saint(obj, lambda = NULL, n.lambda = 100, n.samp = 500, seed = 1)
 }
 \arguments{
-\item{manyglm.obj}{object of class manyglm.}
+\item{obj}{object of class manyglm, or manyany with "clm"}
 
-\item{n.lambda}{number of values of shrinkage parameter lambda for model selection.}
+\item{lambda}{values of shrinkage parameter lambda for model selection (optional)}
 
-\item{n.samp}{number of residuals used for importance sampling.}
+\item{n.lambda}{number of values of shrinkage parameter lambda for model selection, ignored if lambda suplied}
+
+\item{n.samp}{number of residuals used for importance sampling (optional)}
 }
 \value{
-best.graph a list with the paramaters for the best graphical model
+best.graph a list with the paramaters for the 'best' graphical model, chosen by BIC
 
 all.graphs a list with likelihood and BIC for all models along lambda path
 }
