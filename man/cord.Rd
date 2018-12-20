@@ -7,7 +7,7 @@
 cord(obj, nlv = 2, n.samp = 500, seed = 1)
 }
 \arguments{
-\item{obj}{object of class manyglm, or manyany with "clm"}
+\item{obj}{object of class manyglm, or manyany with 'clm'}
 
 \item{nlv}{number of latent variables (default is 2)}
 

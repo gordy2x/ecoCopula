@@ -1,14 +1,22 @@
 Package: saint
 Title: Species interactions from co-occurence data 
 Version: 0.0.0.9000
-Authors@R: person("Gordana", "Popovic", email = "g.popovic@unsw.edu.au", role = c("aut", "cre"))
-Description: Create graphs of species interaction from co-occurence data
-Depends: R (>= 3.3.1), mvabund,glasso, sna, plyr
-Imports: mvabund,
-	 glasso,
-	 sna,
-	 plyr
-License: What license is it under?
+Authors@R: person("Gordana", "Popovic", email = "g.popovic@unsw.edu.au", 
+    role = c("aut", "cre"))
+Description: Creates 'graphs' of species associations (interactions) from 
+    co-occurence data by fitting a discrete gaussian copula graphical 
+    models. Also creates and plots ordination biplots using gaussian copula 
+    factor analytic models. 
+Depends: R (>= 3.3.1), mvabund (>= 3.13.1)
+Imports: glasso (>= 1.10),
+	 plyr (>= 1.8.4),
+	 sna(>= 2.4)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr

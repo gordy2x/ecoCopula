@@ -2,27 +2,57 @@
 % Please edit documentation in R/saint.R
 \name{saint}
 \alias{saint}
-\title{Fit gaussian copula graphical lasso, chose lambda with BIC.}
+\title{Fitting Gaussian copula graphical lasso to co-occurence data}
 \usage{
 saint(obj, lambda = NULL, n.lambda = 100, n.samp = 500, seed = 1)
 }
 \arguments{
-\item{obj}{object of class manyglm, or manyany with "clm"}
+\item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 
+or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}}}
 
-\item{lambda}{values of shrinkage parameter lambda for model selection (optional)}
+\item{lambda}{vector, values of shrinkage parameter lambda for model 
+selection (optional, see detail)}
 
-\item{n.lambda}{number of values of shrinkage parameter lambda for model selection, ignored if lambda suplied}
+\item{n.lambda}{integer, number of lambda values 
+for model selection (optional), ignored if lambda suplied}
 
-\item{n.samp}{number of residuals used for importance sampling (optional)}
+\item{n.samp}{integer, number of sets residuals used for importance sampling 
+(optional, see detail)}
+
+\item{seed}{integer, seed for random number generation}
 }
 \value{
-best.graph a list with the paramaters for the 'best' graphical model, chosen by BIC
-
-all.graphs a list with likelihood and BIC for all models along lambda path
+Three objects are returned; \code{best_graph} is a list with 
+paramaters for the 'best' graphical model, chosen by BIC; 
+\code{all_graphs} is a list with likelihood and BIC for all models along lambda path; 
+\code{obj} is the input object.
 }
 \description{
-Fit gaussian copula graphical lasso, chose lambda with BIC.
+\code{saint} is used to fit a Gaussian copula graphical model to 
+multivatiate discrete data, like species co-occurence data in ecology. 
+This function fits the model and estimates the shrinkage paramater
+using BIC. Use \code{\link{plot.saint}} to plot the resulting graph.
 }
+\section{Details}{
+
+Blah
+}
+
+\section{Author(s)}{
+
+jh
+}
+
+\section{References}{
+
+jhg
+}
+
+\section{See also}{
+
+\code{\link{plot.saint}}
+}
+
 \examples{
 data(spider)
 abund <- mvabund(spider$abund)

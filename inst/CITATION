@@ -1,0 +1,16 @@
+citHeader("To cite saint in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Untangling direct species associations from mediator species effects with graphical models",
+  author       = personList(as.person("Gordana Popovic"),
+                   as.person("David Warton")),
+  journal      = "bioRxiv",
+  year         = "2018",
+  volume       = "0",
+  number       = "0",
+  pages        = "0--0",
+  url          = "http://www.",
+  textVersion  =
+  paste("Popovic, Gordana, et al. Untangling direct species associations from mediator
+   species effects with graphical models. bioRxiv (2018): 470161.")
+)

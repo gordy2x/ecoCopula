@@ -7,7 +7,7 @@
 \method{plot}{saint}(obj, P = NULL)
 }
 \arguments{
-\item{obj}{is a mvabund object, e.g. from output of saint}
+\item{obj}{is a saint object, e.g. from output of saint}
 }
 \value{
 a plot of species interactions, positive/negative interactions are blue/pink,
