@@ -107,9 +107,10 @@ full.graph.many <- function(manyglm.obj, lambdas, res) {
     
     logL = plyr::laply(Th.out, ll.icov.all, S.list = S.list, n = N)
     BIC.out = k * log(N) - 2 * logL  #-sum(manyglm.obj$two.loglike)
+    AIC.out = k * 2 - 2 * logL  #-sum(manyglm.obj$two.loglike)
     
     
-    return(list(k.frac = k.frac, BIC = BIC.out, logL = logL, Th.out = Th.out, Sig.out = Sig.out))
+    return(list(k.frac = k.frac, BIC = BIC.out, AIC = AIC.out,logL = logL, Th.out = Th.out, Sig.out = Sig.out))
     
 }
 
