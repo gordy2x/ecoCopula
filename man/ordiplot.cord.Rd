@@ -4,7 +4,7 @@
 \alias{ordiplot.cord}
 \title{Plot graph of species intearactions.}
 \usage{
-ordiplot.cord(obj, biplot = FALSE, ...)
+\method{ordiplot}{cord}(obj, biplot = FALSE, ...)
 }
 \arguments{
 \item{obj}{is a cord object, e.g. from output of \code{cord}}

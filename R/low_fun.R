@@ -127,3 +127,6 @@ residuals.params <- function(params) {
     return(qnorm(resids))
 }
 
+ordiplot <- function (x, ...) {
+  UseMethod("ordiplot", x)
+}
