@@ -6,9 +6,11 @@
 # low level functions
 
 simulate.res.S <- function(obj, n.res = 200) {
-    pars = params(obj)
-    many.pars = list(pars)[rep(1, n.res)]
-    res = plyr::llply(many.pars, residuals)
+    # pars = params(obj) many.pars = list(pars)[rep(1, n.res)] res = plyr::llply(many.pars, residuals)
+    
+    many.obj = list(obj)[rep(1, n.res)]
+    res = plyr::llply(many.obj, residuals)
+    
     if (min(res[[1]]) > -1e-05) {
         # {residuals function for manyany currently output on uniform scale
         res = plyr::llply(res, qnorm)

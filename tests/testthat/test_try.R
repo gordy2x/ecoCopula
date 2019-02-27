@@ -1,7 +1,6 @@
 context("my first test file")
 
 library(saint)
-library(mvabund)
 data(spider)
 spider.mod=manyglm(mvabund(spider$abund)~spider$x)
 

@@ -14,38 +14,40 @@ or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}
 selection (optional, see detail)}
 
 \item{n.lambda}{integer, number of lambda values 
-for model selection (optional), ignored if lambda suplied}
+for model selection (default = 100), ignored if lambda supplied}
 
-\item{n.samp}{integer, number of sets residuals used for importance sampling 
+\item{n.samp}{integer (default = 500), number of sets residuals used for importance sampling 
 (optional, see detail)}
 
-\item{seed}{integer, seed for random number generation}
+\item{seed}{integer (default = 1), seed for random number generation (optional, see detail)}
 }
 \value{
-Three objects are returned; \code{best_graph} is a list with 
-paramaters for the 'best' graphical model, chosen by BIC; 
+Three objects are returned; 
+\code{best_graph} is a list with parameters for the 'best' graphical model, chosen by BIC; 
 \code{all_graphs} is a list with likelihood and BIC for all models along lambda path; 
 \code{obj} is the input object.
 }
 \description{
 \code{saint} is used to fit a Gaussian copula graphical model to 
 multivatiate discrete data, like species co-occurence data in ecology. 
-This function fits the model and estimates the shrinkage paramater
+This function fits the model and estimates the shrinkage parameter
 using BIC. Use \code{\link{plot.saint}} to plot the resulting graph.
 }
 \section{Details}{
 
-Blah
+\code{saint} is used to fit a Gaussian copula graphical model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{glasso}} package for fitting Gaussian graphical models. Models are fit for a path of values of the shrinkage parameter \code{lambda} chosen so that both completely dense and sparse models are fit. The \code{lambda} value for the \code{best_graph} is chosen by BIC.  The seed is controlled so that models with the same data and different predictors can be compared.
 }
 
 \section{Author(s)}{
 
-jh
+Gordana Popovic <g.popovic@unsw.edu.au>.
 }
 
 \section{References}{
 
-jhg
+Dunn, P.K., & Smyth, G.K. (1996). Randomized quantile residuals. Journal of Computational and Graphical Statistics 5, 236-244.
+
+Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for covariance modeling of discrete data. Journal of Multivariate Analysis, 165, 86-100.
 }
 
 \section{See also}{
@@ -57,9 +59,9 @@ jhg
 data(spider)
 abund <- mvabund(spider$abund)
 X <- spider$x
-spider.mod=manyglm(abund~X)
-spid.graph=saint(spider.mod)
-plot(spid.graph)
+spider_mod=manyglm(abund~X)
+spid_graph=saint(spider_mod)
+plot(spid_graph,pad=1)
 
 
 }

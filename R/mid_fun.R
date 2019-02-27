@@ -1,6 +1,5 @@
 
-#to import a function use this but with the roxygen comment type #'
-#@importFrom mvabund manyglm
+# to import a function use this but with the roxygen comment type #' @importFrom mvabund manyglm
 
 # mid level functions
 
@@ -133,15 +132,16 @@ fact.many <- function(manyglm.obj, nlv, res) {
         Scores[[i.nlv]] = t(as.matrix(A$loadings)) %*% A$theta %*% t(res[[1]])
     }
     
-    
     BIC.out = logL = NULL
     k = P * nlv + P - nlv * (nlv - 1)/2
     logL = plyr::laply(Th.out, ll.icov.all, S.list = S.list, n = N)
-    BIC.out = k * log(N) - 2 * logL  #-sum(manyglm.obj$two.loglike)
+    BIC.out = k * log(N) - 2 * logL  -sum(manyglm.obj$two.loglike)
     
     
-    return(list(BIC = BIC.out, logL = logL, theta = Th.out, sigma = Sig.out, loadings = Loadings, 
-        scores = Scores))
+    return(list( loadings = Loadings, scores = Scores, 
+                 theta = Th.out, sigma = Sig.out,
+                 BIC = BIC.out, logL = logL,
+                 obj=manyglm.obj))
     
 }
 
@@ -181,7 +181,7 @@ factor_opt = function(nlv, S.list, full = FALSE, quick = FALSE, N) {
         count = 1
         diff = eps + 1
         while ((diff > eps & count < maxit) & any(!is.na(Theta.gl[[count]]))) {
-            weights = laply(S.list, L.icov.prop, Theta = Theta.gl[[count]])
+            weights = plyr::laply(S.list, L.icov.prop, Theta = Theta.gl[[count]])
             weights = weights/sum(weights)
             count = count + 1
             Sigma.gl[[count]] = cov2cor(apply(array.S, c(1, 2), weighted.mean, w = weights))

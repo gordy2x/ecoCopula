@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("Gordana", "Popovic", email = "g.popovic@unsw.edu.au", 
     role = c("aut", "cre"))
 Description: Creates 'graphs' of species associations (interactions) from 
-    co-occurence data by fitting a discrete gaussian copula graphical 
+    co-occurence data by fitting discrete gaussian copula graphical 
     models. Also creates and plots ordination biplots using gaussian copula 
     factor analytic models. 
 Depends: R (>= 3.3.1), mvabund (>= 3.13.1)
