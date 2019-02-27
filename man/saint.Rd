@@ -4,7 +4,8 @@
 \alias{saint}
 \title{Fitting Gaussian copula graphical lasso to co-occurence data}
 \usage{
-saint(obj, lambda = NULL, n.lambda = 100, n.samp = 500, seed = 1)
+saint(obj, lambda = NULL, n.lambda = 100, n.samp = 500, seed = 1,
+  method = "BIC")
 }
 \arguments{
 \item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 

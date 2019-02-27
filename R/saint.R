@@ -39,7 +39,7 @@
 #' 
 #' @export
 saint <- function(obj, lambda = NULL, n.lambda = 100, 
-                  n.samp = 500, seed = 1) {
+                  n.samp = 500, seed = 1, method="BIC") {
     
     if (!is.numeric(seed)) 
         stop("seed must be numeric")
@@ -95,7 +95,15 @@ saint <- function(obj, lambda = NULL, n.lambda = 100,
     logL = ag$logL
     
     #determine best graph by BIC
-    best = min(which(BIC.graph == min(BIC.graph)))
+    if(method=="BIC"){
+      best = min(which(BIC.graph == min(BIC.graph)))
+    }else if (method=="AIC"){
+      best = min(which(AIC.graph == min(AIC.graph)))
+    }else{
+      stop("lambda selection method can only be \"AIC\" or \"BIC\" ")
+    }
+    
+    
     Th.best = ag$Th.out[[best]]
     Sig.best = ag$Sig.out[[best]]
     
