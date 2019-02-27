@@ -103,7 +103,7 @@ saint <- function(obj, lambda = NULL, n.lambda = 100,
     graph.out = as.matrix((Th.best != 0) * 1)
     best.graph = list(graph = graph.out, prec = Th.best, cov = Sig.best, Y = obj$y, logL = logL[[best]], 
         sparsity = k.frac[best])
-    all.graphs = list(lambda.opt = lambda[best], logL = logL, BIC = BIC.graph,AIC = AIC.graph, lambda = lambda, k.frac = k.frac)
+    all.graphs = list(lambda.opt = lambda[best], logL = logL, BIC = BIC.graph, AIC = AIC.graph, lambda = lambda, k.frac = k.frac)
     out = list(best_graph = best.graph, all_graphs = all.graphs, obj = obj)
     class(out) = "saint"
     return(out)
