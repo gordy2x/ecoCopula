@@ -2,11 +2,13 @@
 % Please edit documentation in R/plot_cord.R
 \name{ordiplot}
 \alias{ordiplot}
-\title{Plots latent variables and their corresponding coefficients (biplot).}
+\title{Plots an ordination plot of latent variables and their corresponding coefficients (biplot).}
 \usage{
 ordiplot(x, ...)
 }
 \arguments{
+\item{...}{other parameters to be passed through to plotting functions.}
+
 \item{obj}{is a cord object, e.g. from output of \code{cord}}
 
 \item{biplot}{\code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables}
@@ -15,7 +17,7 @@ ordiplot(x, ...)
 an ordination plot.
 }
 \description{
-Plots latent variables and their corresponding coefficients (biplot).
+Plots an ordination plot of latent variables and their corresponding coefficients (biplot).
 }
 \examples{
 data(spider)

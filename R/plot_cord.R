@@ -1,9 +1,10 @@
 
 
-#' Plots latent variables and their corresponding coefficients (biplot).
+#' Plots an ordination plot of latent variables and their corresponding coefficients (biplot).
 #'
 #' @param obj is a cord object, e.g. from output of \code{cord}
 #' @param biplot \code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables
+#' @param ...	other parameters to be passed through to plotting functions. 
 #' @return an ordination plot.
 #' @examples
 #' data(spider)
@@ -16,10 +17,9 @@
 #' ordiplot(spid_lv,biplot = TRUE,col=cols)
 #' @importFrom gllvm ordiplot
 #' @export ordiplot
-ordiplot <- ordiplot
-#' @export "ordiplot.cord"
-
-ordiplot.cord = function(obj,biplot = FALSE, ...) {
+ordiplot<- ordiplot
+#' @export ordiplot.cord
+ordiplot.cord = function(obj, biplot = FALSE, ...) {
     
     #species labels from the original data
     labs = colnames(obj$obj$data$abund)

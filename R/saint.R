@@ -36,6 +36,7 @@
 #' spider_mod=manyglm(abund~X)
 #' spid_graph=saint(spider_mod)
 #' plot(spid_graph,pad=1)
+#' @export 
 saint <- function(obj, lambda = NULL, n.lambda = 100, 
                   n.samp = 500, method="BIC", seed = 1) {
     
