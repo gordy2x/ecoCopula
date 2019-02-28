@@ -5,10 +5,6 @@
 #' @param obj is a cord object, e.g. from output of \code{cord}
 #' @param biplot \code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables
 #' @return an ordination plot.
-#' @importFrom gllvm ordiplot
-#' @export ordiplot
-ordiplot <- ordiplot
-#' @export "ordiplot.cord"
 #' @examples
 #' data(spider)
 #' abund <- mvabund(spider$abund)
@@ -18,6 +14,10 @@ ordiplot <- ordiplot
 #' #colour sites accoring to second column of x (bare sand)
 #' cols=ifelse(spider$x[,2]>0,"black","red")
 #' ordiplot(spid_lv,biplot = TRUE,col=cols)
+#' @importFrom gllvm ordiplot
+#' @export ordiplot
+ordiplot <- ordiplot
+#' @export "ordiplot.cord"
 
 ordiplot.cord = function(obj,biplot = FALSE, ...) {
     

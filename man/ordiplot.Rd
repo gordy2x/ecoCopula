@@ -17,3 +17,13 @@ an ordination plot.
 \description{
 Plots latent variables and their corresponding coefficients (biplot).
 }
+\examples{
+data(spider)
+abund <- mvabund(spider$abund)
+X <- spider$x
+spider_mod=manyglm(abund~1)
+spid_lv=cord(spider_mod)
+#colour sites accoring to second column of x (bare sand)
+cols=ifelse(spider$x[,2]>0,"black","red")
+ordiplot(spid_lv,biplot = TRUE,col=cols)
+}
