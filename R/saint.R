@@ -74,19 +74,44 @@ saint <- function(obj, lambda = NULL, n.lambda = 100,
     #explore graphs ranging from completely sparse to completely dense.
     if (is.null(lambda)) {
         # starting values for log10 lambda
-        current = c(-16, seq(-10, 10, length.out = 20))
+        current = seq(-6, 2, length.out = 10)
         
         # proportion of non-zero cond indep
-        k.frac = full.graph.many(obj, 10^current, res)$k.frac
+        sparse_fits = full.graph.many(obj, c(0,10^current), res)
+        k.frac=sparse_fits$k.frac
+        
         # which lambdas give full and empty matrices
         new.min = max(which(k.frac == 1))
         new.max = min(which(k.frac == 0))
         
-        # now sequence of lambda values, between the two
-        lambda = 10^c(-16, seq(current[new.min], current[new.max], length.out = n.lambda))
+        # now a small sequence of lambda values, between the two
+        lambda = c(0,10^seq(current[new.min], current[new.max], length.out = 10))
+        sparse_fits = full.graph.many(obj, lambda, res)
+        
+        
+        #then find the sweet spot by removing the 5 largest of the 10 values above
+        if(method=="BIC"){
+          sub_lam=lambda[sparse_fits$BIC<kth_largest(sparse_fits$BIC,5)]
+        }else if (method=="AIC"){
+          sub_lam=lambda[sparse_fits$AIC<kth_largest(sparse_fits$AIC,5)]
+        }else{
+          stop("lambda selection method can only be \"AIC\" or \"BIC\" ")
+        }
+        
+        # now a larger sequence but just between those
+        min_lam=min(sub_lam)
+        if(min_lam>0){
+          lambda = 10^c( seq(log10(min_lam), log10(max(sub_lam)), length.out = n.lambda))
+        } else{
+          min_lam=min(sub_lam[sub_lam>0])
+          lambda = c(0,10^c( seq(log10(min_lam), log10(max(sub_lam)), length.out = (n.lambda-1))))
+        }
+
     } else {
         n.lambda = length(lambda)
     }
+
+    
     ag = full.graph.many(obj, lambda, res)
     k.frac = ag$k.frac
     BIC.graph = ag$BIC

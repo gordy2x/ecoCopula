@@ -6,21 +6,20 @@
 glasso_opt = function(rho, S.list, full = FALSE, quick = FALSE, start = "cold", cov.last = NULL, prec.last = NULL) {
     P = dim(S.list[[1]])[1]
     J = length(S.list)
-    eps = 1e-10
+    eps = 1e-3
     maxit = 10
     array.S = array(unlist(S.list), c(P, P, J))
     S.init = cov2cor(apply(array.S, c(1, 2), mean))
     weights = rep(1, J)/J
     
     if (start == "warm") {
-        A = glasso::glasso(S.init, rho = rho, penalize.diagonal = FALSE, thr = 1e-08, start = "warm", 
-            w.init = cov.last, wi.init = prec.last)
-        cov.last = A$w
-        prec.last = A$wi
+        A = suppressWarnings(glasso::glasso(S.init, rho = rho, penalize.diagonal = FALSE, thr = 1e-08, start = "warm", 
+            w.init = cov.last, wi.init = prec.last))
     } else {
-        A = glasso::glasso(S.init, rho = rho, penalize.diagonal = FALSE, thr = 1e-08)
+        A = suppressWarnings(glasso::glasso(S.init, rho = rho, penalize.diagonal = FALSE, thr = 1e-08))
     }
-    
+    cov.last = A$w
+    prec.last = A$wi
     
     Sigma.gl = Theta.gl = list()
     Sigma.gl[[1]] = A$w
@@ -29,34 +28,37 @@ glasso_opt = function(rho, S.list, full = FALSE, quick = FALSE, start = "cold", 
     if (!(quick)) {
         count = 1
         diff = eps + 1
-        while ((diff > eps & count < maxit) & any(!is.na(Theta.gl[[count]]))) {
+        diff_old=diff+1
+        while ((diff > eps & count < maxit) & !any(is.na(Theta.gl[[count]]))) {
             weights = plyr::laply(S.list, L.icov.prop, Theta = Theta.gl[[count]])
             weights = weights/sum(weights)
-            # print(1/sum(weights^2))
+            ESS=sum(weights)^2/sum(weights^2)
+            
+            if(ESS<(J/20)|(diff_old<diff))
+              stop("this is bad, probable divergence, try removing some columns, increasing n.samp and changing the seed")            # plot(weights)
+            diff_old=diff
             count = count + 1
             Sigma.gl[[count]] = cov2cor(apply(array.S, c(1, 2), weighted.mean, w = weights))
             
-            if (start == "warm") {
-                A = glasso::glasso(Sigma.gl[[count]], rho = rho, penalize.diagonal = FALSE, thr = 1e-08, 
-                  start = "warm", w.init = cov.last, wi.init = prec.last)
+                A = suppressWarnings(glasso::glasso(Sigma.gl[[count]], rho = rho, penalize.diagonal = FALSE, thr = 1e-08, 
+                  start = "warm", w.init = cov.last, wi.init = prec.last))
                 cov.last = A$w
                 prec.last = A$wi
-            } else {
-                A = glasso::glasso(Sigma.gl[[count]], rho = rho, penalize.diagonal = FALSE, thr = 1e-08)
-            }
+
             
             
             Sigma.gl[[count]] = A$w
             Theta.gl[[count]] = A$wi
-            if (any(!is.na(Theta.gl[[count]]))) {
-                diff = sum(((Theta.gl[[count]] - Theta.gl[[count - 1]])^2)/(P^2))
+            if (!any(is.na(Theta.gl[[count]]))) {
+                diff = mean(((Theta.gl[[count]] - Theta.gl[[count - 1]])^2))
             } else {
-                diff = sum(((Sigma.gl[[count]] - Sigma.gl[[count - 1]])^2)/(P^2))
+                diff = mean(((Sigma.gl[[count]] - Sigma.gl[[count - 1]])^2))
             }
             # print(diff)
         }
         
     }
+    # print(rho)
     if (full) {
         return(A)
     } else {
@@ -86,7 +88,6 @@ full.graph.many <- function(manyglm.obj, lambdas, res) {
     
     if (n.lam > 1) {
         
-        
         for (i.lam in 2:n.lam) {
             A = glasso_opt(lambdas[i.lam], S.list, full = TRUE, quick = FALSE, start = "warm", cov.last = cov.last, 
                 prec.last = prec.last)
@@ -94,6 +95,7 @@ full.graph.many <- function(manyglm.obj, lambdas, res) {
             prec.last = A$wi
             Th.out[[i.lam]] = prec.last
             Sig.out[[i.lam]] = cov.last
+            
         }
     }
     

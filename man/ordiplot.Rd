@@ -4,7 +4,7 @@
 \alias{ordiplot}
 \title{Plots an ordination plot of latent variables and their corresponding coefficients (biplot).}
 \usage{
-ordiplot(x, ...)
+ordiplot(object, ...)
 }
 \arguments{
 \item{...}{other parameters to be passed through to plotting functions.}

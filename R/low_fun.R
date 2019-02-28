@@ -127,6 +127,10 @@ residuals.params <- function(params) {
     return(qnorm(resids))
 }
 
-ordiplot <- function (x, ...) {
-  UseMethod("ordiplot", x)
+kth_largest<-function(x,k=1){
+  n <- length(x)
+  sort(x,partial=n-k+1)[n-k+1]
 }
+
+
+
