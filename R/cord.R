@@ -14,6 +14,15 @@
 #' \code{theta} precision matrix estimated with \code{nlv} latent variables
 #' \code{BIC} BIC of estimated model
 #' \code{logL} log-likelihood of estimated model
+#' @section Author(s):
+#' Gordana Popovic <g.popovic@unsw.edu.au>.
+#' @section References:
+#' Dunn, P.K., & Smyth, G.K. (1996). Randomized quantile residuals. Journal of Computational and Graphical Statistics 5, 236-244.
+#' 
+#' Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for covariance modeling of discrete data. Journal of Multivariate Analysis, 165, 86-100.
+#' @section See also:
+#' \code{\link{ordiplot.cord}}
+#' @examples
 #' @export 
 #' @examples
 #' data(spider)

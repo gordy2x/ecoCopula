@@ -1,10 +1,14 @@
 
 
-#' Plot graph of species intearactions.
+#' Plots latent variables and their corresponding coefficients (biplot).
 #'
 #' @param obj is a cord object, e.g. from output of \code{cord}
+#' @param biplot \code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables
 #' @return an ordination plot.
-#' @export
+#' @importFrom gllvm ordiplot
+#' @export ordiplot
+ordiplot <- ordiplot
+#' @export "ordiplot.cord"
 #' @examples
 #' data(spider)
 #' abund <- mvabund(spider$abund)

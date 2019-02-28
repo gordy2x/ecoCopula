@@ -4,8 +4,8 @@
 \alias{saint}
 \title{Fitting Gaussian copula graphical lasso to co-occurence data}
 \usage{
-saint(obj, lambda = NULL, n.lambda = 100, n.samp = 500, seed = 1,
-  method = "BIC")
+saint(obj, lambda = NULL, n.lambda = 100, n.samp = 500,
+  method = "BIC", seed = 1)
 }
 \arguments{
 \item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 
@@ -20,12 +20,14 @@ for model selection (default = 100), ignored if lambda supplied}
 \item{n.samp}{integer (default = 500), number of sets residuals used for importance sampling 
 (optional, see detail)}
 
+\item{method}{method for selecting shrinkage parameter lambda, either "BIC" (default) or "AIC"}
+
 \item{seed}{integer (default = 1), seed for random number generation (optional, see detail)}
 }
 \value{
 Three objects are returned; 
-\code{best_graph} is a list with parameters for the 'best' graphical model, chosen by BIC; 
-\code{all_graphs} is a list with likelihood and BIC for all models along lambda path; 
+\code{best_graph} is a list with parameters for the 'best' graphical model, chosen by the chosen \code{method}; 
+\code{all_graphs} is a list with likelihood, BIC and AIC for all models along lambda path; 
 \code{obj} is the input object.
 }
 \description{
@@ -36,7 +38,7 @@ using BIC. Use \code{\link{plot.saint}} to plot the resulting graph.
 }
 \section{Details}{
 
-\code{saint} is used to fit a Gaussian copula graphical model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{glasso}} package for fitting Gaussian graphical models. Models are fit for a path of values of the shrinkage parameter \code{lambda} chosen so that both completely dense and sparse models are fit. The \code{lambda} value for the \code{best_graph} is chosen by BIC.  The seed is controlled so that models with the same data and different predictors can be compared.
+\code{saint} is used to fit a Gaussian copula graphical model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{glasso}} package for fitting Gaussian graphical models. Models are fit for a path of values of the shrinkage parameter \code{lambda} chosen so that both completely dense and sparse models are fit. The \code{lambda} value for the \code{best_graph} is chosen by BIC (default) or AIC.  The seed is controlled so that models with the same data and different predictors can be compared.
 }
 
 \section{Author(s)}{
@@ -63,6 +65,4 @@ X <- spider$x
 spider_mod=manyglm(abund~X)
 spid_graph=saint(spider_mod)
 plot(spid_graph,pad=1)
-
-
 }

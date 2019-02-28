@@ -31,6 +31,23 @@ Model based ordination with gaussian copulas
 \code{cord} is used to fit a Gaussian copula factor analytic model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{factanal}} function. The seed is controlled so that models with the same data and different predictors can be compared.
 }
 
+\section{Author(s)}{
+
+Gordana Popovic <g.popovic@unsw.edu.au>.
+}
+
+\section{References}{
+
+Dunn, P.K., & Smyth, G.K. (1996). Randomized quantile residuals. Journal of Computational and Graphical Statistics 5, 236-244.
+
+Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for covariance modeling of discrete data. Journal of Multivariate Analysis, 165, 86-100.
+}
+
+\section{See also}{
+
+\code{\link{ordiplot.cord}}
+}
+
 \examples{
 data(spider)
 abund <- mvabund(spider$abund)
