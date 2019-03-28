@@ -2,7 +2,7 @@
 
 #' Plot graph of species intearactions.
 #'
-#' @param obj is a saint object, e.g. from output of saint.
+#' @param obj is a cgr object, e.g. from output of cgr.
 #' @param P locations of graph nodes, if NULL (default) these are generated with a Fruchterman Reingold algorithm.
 #' @param ...	other parameters to be passed through to plotting functions, in particular \code{pad}, the amount to pad the plotting range is useful if labels are being clipped.  
 #' @return a plot of species associations after accounting for the effect of all other species, positive/negative are blue/pink.
@@ -13,10 +13,10 @@
 #' abund <- mvabund(spider$abund)
 #' X <- spider$x
 #' spider_mod=manyglm(abund~1)
-#' spid_graph=saint(spider_mod)
+#' spid_graph=cgr(spider_mod)
 #' plot(spid_graph)
 
-plot.saint = function(obj, P = NULL, ...) {
+plot.cgr = function(obj, P = NULL, ...) {
     
     #species labels from the original data
     labs = colnames(obj$best_graph$Y)

@@ -1,5 +1,5 @@
-Package: saint
-Title: Species interactions from co-occurence data 
+Package: ecoCopula
+Title: Graphical modelling and ordination using copulas
 Version: 0.0.0.9000
 Authors@R: person("Gordana", "Popovic", email = "g.popovic@unsw.edu.au", 
     role = c("aut", "cre"))
