@@ -11,8 +11,8 @@ Depends: R (>= 3.3.1),
          mvabund (>= 3.13.1)
 Imports: glasso (>= 1.10),
 	 plyr (>= 1.8.4),
-	 sna(>= 2.4), 
-         gllvm(>= 1.1.2)
+	 sna (>= 2.4), 
+         gllvm (>= 1.1.2)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
