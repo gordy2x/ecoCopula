@@ -7,9 +7,9 @@ Description: Creates 'graphs' of species associations (interactions) from
     co-occurence data by fitting discrete gaussian copula graphical 
     models. Also creates and plots ordination biplots using gaussian copula 
     factor analytic models. 
-Depends: R (>= 3.3.1)
-Imports: mvabund (>= 3.13.1),
-         glasso (>= 1.10),
+Depends: R (>= 3.3.1),
+         mvabund (>= 3.13.1)
+Imports: glasso (>= 1.10),
 	 plyr (>= 1.8.4),
 	 sna(>= 2.4), 
          gllvm(>= 1.1.2)
