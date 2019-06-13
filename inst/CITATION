@@ -1,4 +1,4 @@
-citHeader("To cite saint in publications use:")
+citHeader("To cite ecoCopula in publications use:")
 
 citEntry(entry = "Article",
   title        = "Untangling direct species associations from mediator species effects with graphical models",

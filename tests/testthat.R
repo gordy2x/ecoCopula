@@ -1,4 +1,4 @@
 library(testthat)
-library(saint)
+library(ecoCopula)
 
-test_check("saint")
+test_check("ecoCopula")
