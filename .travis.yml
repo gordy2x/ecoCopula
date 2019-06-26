@@ -56,23 +56,18 @@ matrix:
         # https://docs.travis-ci.com/user/languages/r/#Additional-Dependency-Fields
 
 #   precise is getting decommissioned on Travis, so better to leave it out
-os:
-  - windows
-  - linux
-  - osx
+#    - os: linux
 #      dist: trusty
 #      sudo: false
 #      env: R_CODECOV = true
 #      r_build_args: '--no-build-vignettes'
 #      r_check_args: '--ignore-vignettes --no-examples'
-#   - os: osx
-#     osx_image: xcode9.2
-#   - os: osx
-#     osx_image: xcode7.3
+    - os: osx
+      osx_image: xcode9.2
+    - os: osx
+      osx_image: xcode7.3
       r_build_args: '--no-build-vignettes'
       r_check_args: '--ignore-vignettes --no-examples'
-  
-  
 
 addons:
   apt:
