@@ -16,9 +16,9 @@
 
 \item{sp.col}{species name colour (default is blue), vector of length equal to the number of sites (if arrow=TRUE)}
 
-\item{alpha}{scaling factor for ratio of scores to loadings (defauls is 0.9)}
+\item{alpha}{scaling factor for ratio of scores to loadings (default is 0.9)}
 
-\item{arrow}{should arrows be plotted for species loadings (default sis TRUE)}
+\item{arrow}{should arrows be plotted for species loadings (default is TRUE)}
 
 \item{...}{other parameters to be passed through to plotting functions.}
 }

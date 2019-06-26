@@ -2,7 +2,7 @@
 % Please edit documentation in R/cord.R
 \name{cord}
 \alias{cord}
-\title{Model based ordination with gaussian copulas}
+\title{Model based ordination with Gaussian copulas}
 \usage{
 cord(obj, nlv = 2, n.samp = 500, seed = 1)
 }
@@ -26,7 +26,7 @@ or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}
 \code{logL} log-likelihood of estimated model
 }
 \description{
-Model based ordination with gaussian copulas
+Model based ordination with Gaussian copulas
 }
 \section{Details}{
 

@@ -1,6 +1,6 @@
 
 
-#' Plot graph of species intearactions.
+#' Plot graph of direct species associations.
 #'
 #' @param obj is a cgr object, e.g. from output of cgr.
 #' @param P locations of graph nodes, if NULL (default) these are generated with a Fruchterman Reingold algorithm.

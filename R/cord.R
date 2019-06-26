@@ -1,4 +1,4 @@
-#' Model based ordination with gaussian copulas
+#' Model based ordination with Gaussian copulas
 #'
 #' @param  obj object of either class \code{\link[mvabund]{manyglm}}, 
 #' or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}}

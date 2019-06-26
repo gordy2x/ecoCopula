@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_cgr.R
 \name{plot.cgr}
 \alias{plot.cgr}
-\title{Plot graph of species intearactions.}
+\title{Plot graph of direct species associations.}
 \usage{
 \method{plot}{cgr}(obj, P = NULL, ...)
 }
@@ -18,7 +18,7 @@ a plot of species associations after accounting for the effect of all other spec
 The matrix of node positions (\code{P}) is returned silently.
 }
 \description{
-Plot graph of species intearactions.
+Plot graph of direct species associations.
 }
 \examples{
 data(spider)

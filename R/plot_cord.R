@@ -4,8 +4,8 @@
 #' @param biplot \code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables
 #' @param site.col site number colour (default is black), vector of length equal to the number of sites 
 #' @param sp.col species name colour (default is blue), vector of length equal to the number of sites (if arrow=TRUE)
-#' @param alpha scaling factor for ratio of scores to loadings (defauls is 0.9)
-#' @param arrow should arrows be plotted for species loadings (default sis TRUE)
+#' @param alpha scaling factor for ratio of scores to loadings (default is 0.9)
+#' @param arrow should arrows be plotted for species loadings (default is TRUE)
 #' @param ...	other parameters to be passed through to plotting functions. 
 #' @return an ordination plot.
 #' @export
