@@ -83,7 +83,7 @@ repos:
 r_packages:
   - covr
 
-warnings_are_errors: true
+warnings_are_errors: false
 #r_check_revdep: true
 
 notifications:
