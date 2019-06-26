@@ -2,8 +2,13 @@
 #'
 #' @param obj is a cord object, e.g. from output of \code{cord}
 #' @param biplot \code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables
+#' @param site.col site number colour (default is black), vector of length equal to the number of sites 
+#' @param sp.col species name colour (default is blue), vector of length equal to the number of sites (if arrow=TRUE)
+#' @param alpha scaling factor for ratio of scores to loadings (defauls is 0.9)
+#' @param arrow should arrows be plotted for species loadings (default sis TRUE)
 #' @param ...	other parameters to be passed through to plotting functions. 
 #' @return an ordination plot.
+#' @export
 #' @examples
 #' data(spider)
 #' abund <- mvabund(spider$abund)
@@ -12,12 +17,9 @@
 #' spid_lv=cord(spider_mod)
 #' #colour sites accoring to second column of x (bare sand)
 #' cols=ifelse(spider$x[,2]>0,"black","red")
-#' ordiplot(spid_lv,biplot = TRUE,col=cols)
-#' @importFrom gllvm ordiplot
-#' @export ordiplot
-ordiplot<- ordiplot
-#' @export ordiplot.cord
-ordiplot.cord = function(obj, biplot = FALSE,site.col="black",sp.col="black",alpha=0.9,arrow=TRUE, ...) {
+#' plot(spid_lv,biplot = TRUE,site.col=cols)
+
+plot.cord <- function(obj, biplot = FALSE,site.col="black",sp.col="blue",alpha=0.9,arrow=TRUE, ...) {
     
     #species labels from the original data
     labs = colnames(obj$obj$data$abund)
@@ -40,7 +42,7 @@ ordiplot.cord = function(obj, biplot = FALSE,site.col="black",sp.col="black",alp
       if(arrow){
         arrows(0,0,loadings[,1],loadings[,2],length=0,col="dark gray")
       }
-      text(loadings[,1],loadings[,2],labels = labs,col="blue",cex = 0.8)
+      text(loadings[,1],loadings[,2],labels = labs,col=sp.col,cex = 0.8)
     }
     
 }

@@ -5,6 +5,8 @@
 #' @param nlv number of latent variables (default = 2, for plotting on a scatterplot)
 #' @param n.samp integer (default = 500), number of sets residuals used for importance sampling 
 #' (optional, see detail)
+#' @param seed integer (default = 1), seed for random number generation (optional, see detail)
+
 #' @section Details:
 #' \code{cord} is used to fit a Gaussian copula factor analytic model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{factanal}} function. The seed is controlled so that models with the same data and different predictors can be compared.  
 #' @return
@@ -21,8 +23,8 @@
 #' 
 #' Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for covariance modeling of discrete data. Journal of Multivariate Analysis, 165, 86-100.
 #' @section See also:
-#' \code{\link{ordiplot.cord}}
-#' @examples
+#' \code{\link{plot.cord}}
+#' @import mvabund
 #' @export 
 #' @examples
 #' data(spider)
@@ -30,7 +32,7 @@
 #' X <- spider$x
 #' spider_mod=manyglm(abund~1)
 #' spid_lv=cord(spider_mod)
-#' ordiplot(spid_lv,biplot = TRUE)
+#' plot(spid_lv,biplot = TRUE)
 cord <- function(obj, nlv = 2, n.samp = 500, seed = 1) {
     
     if (!is.numeric(seed)) 

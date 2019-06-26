@@ -1,6 +1,7 @@
 
 
-
+utils::globalVariables(c("cov2cor", "factanal", "weighted.mean","coef","plot",
+                         "abline","text","arrows","runif","qnorm","residuals"))
 
 
 # low level functions
