@@ -1,4 +1,4 @@
-## ecoCopula [![Build Status](https://travis-ci.com/gordy2x/ecoCopula.svg)](https://travis-ci.com/gordy2x/ecoCopula) [![License](http://img.shields.io/badge/license-LGPL%20%28%3E=%202.1%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)[![DOI](https://zenodo.org/badge/139233335.svg)](https://zenodo.org/badge/latestdoi/139233335)
+## ecoCopula [![Build Status](https://travis-ci.com/gordy2x/ecoCopula.svg)](https://travis-ci.com/gordy2x/ecoCopula) [![License](http://img.shields.io/badge/license-LGPL%20%28%3E=%202.1%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![DOI](https://zenodo.org/badge/139233335.svg)](https://zenodo.org/badge/latestdoi/139233335)
 
 =======
 
