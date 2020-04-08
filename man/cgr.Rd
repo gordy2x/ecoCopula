@@ -4,8 +4,7 @@
 \alias{cgr}
 \title{Fitting Gaussian copula graphical lasso to co-occurence data}
 \usage{
-cgr(obj, lambda = NULL, n.lambda = 100, n.samp = 500,
-  method = "BIC", seed = 1)
+cgr(obj, lambda = NULL, n.lambda = 100, n.samp = 500, method = "BIC", seed = 1)
 }
 \arguments{
 \item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 

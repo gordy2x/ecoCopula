@@ -2,6 +2,7 @@
 
 S3method(plot,cgr)
 S3method(plot,cord)
+S3method(simulate,cord)
 export(cgr)
 export(cord)
 import(mvabund)

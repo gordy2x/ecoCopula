@@ -1,16 +1,16 @@
 citHeader("To cite ecoCopula in publications use:")
 
 citEntry(entry = "Article",
-  title        = "Untangling direct species associations from mediator species effects with graphical models",
-  author       = personList(as.person("Gordana Popovic"),
-                   as.person("David Warton")),
-  journal      = "bioRxiv",
-  year         = "2018",
-  volume       = "0",
-  number       = "0",
-  pages        = "0--0",
-  url          = "http://www.",
+  title        = "Untangling direct species associations from indirect mediator species effects with graphical models",
+  author       = personList(as.person("Gordana C. Popovic"),
+                   as.person("David I. Warton"), as.person("Fiona J. Thomson"),as.person("Angela T. Moles")),
+  journal      = "Methods in Ecology and Evolution",
+  year         = "2019",
+  volume       = "10",
+  number       = "9",
+  pages        = "1571 -- 1583",
+  url          = "https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13247",
   textVersion  =
-  paste("Popovic, Gordana, et al. Untangling direct species associations from mediator
-   species effects with graphical models. bioRxiv (2018): 470161.")
+  paste("Popovic, GC, Warton, DI, Thomson, FJ, Hui, FKC, Moles, AT. Untangling direct species associations from indirect mediator species effects with graphical models. Methods Ecol Evol. 2019; 10: 1571– 1583. ")
 )
+

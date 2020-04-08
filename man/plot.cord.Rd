@@ -4,8 +4,15 @@
 \alias{plot.cord}
 \title{Plots an ordination plot of latent variables and their corresponding coefficients (biplot).}
 \usage{
-\method{plot}{cord}(obj, biplot = FALSE, site.col = "black",
-  sp.col = "blue", alpha = 0.9, arrow = TRUE, ...)
+\method{plot}{cord}(
+  obj,
+  biplot = FALSE,
+  site.col = "black",
+  sp.col = "blue",
+  alpha = 0.9,
+  arrow = TRUE,
+  ...
+)
 }
 \arguments{
 \item{obj}{is a cord object, e.g. from output of \code{cord}}
