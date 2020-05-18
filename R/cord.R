@@ -33,10 +33,20 @@
 #' spider_mod=manyglm(abund~1)
 #' spid_lv=cord(spider_mod)
 #' plot(spid_lv,biplot = TRUE)
-cord <- function(obj, nlv = 2, n.samp = 500, seed = 1) {
+cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     
-    if (!is.numeric(seed)) 
-        stop("seed must be numeric")
+    # code chunk from simulate.lm to select seed
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+        runif(1)
+    if (is.null(seed)) { 
+        RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+    } else {
+        R.seed <- get(".Random.seed", envir = .GlobalEnv)
+        set.seed(seed)
+        RNGstate <- structure(seed, kind = as.list(RNGkind()))
+        on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+    }
+    
     
     if (floor(n.samp) != ceiling(n.samp)) 
         stop("n.samp must be an integer")

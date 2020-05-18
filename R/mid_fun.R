@@ -132,7 +132,9 @@ fact.many <- function(manyglm.obj, nlv, res) {
         Th.out[[i.nlv]] = A$theta
         Sig.out[[i.nlv]] = A$sigma
         Loadings[[i.nlv]] = A$loadings
-        Scores[[i.nlv]] = t(as.matrix(A$loadings)) %*% A$theta %*% t(res[[1]])
+        res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
+        # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
+        Scores[[i.nlv]] = t(as.matrix(A$loadings)) %*% A$theta %*% t(res.mean)
     }
     
     BIC.out = logL = NULL
@@ -204,6 +206,7 @@ factor_opt = function(nlv, S.list, full = FALSE, quick = FALSE, N) {
             Theta.gl[[count]] = Test
             A$sigma = Sest
             A$theta = Test
+            A$weights = weights
             
             if (any(!is.na(Theta.gl[[count]]))) {
                 diff = sum(((Theta.gl[[count]] - Theta.gl[[count - 1]])^2)/(P^2))
