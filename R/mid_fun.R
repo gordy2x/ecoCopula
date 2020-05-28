@@ -122,35 +122,25 @@ fact.many <- function(manyglm.obj, nlv, res) {
     res = res$res
     P = dim(S.list[[1]])[1]
     N = dim(manyglm.obj$fitted.values)[1]
-    
-    
-    n.nlv = length(nlv)
-    Th.out = Sig.out = Loadings = Scores = list(n.nlv)
-    
-    for (i.nlv in 1:n.nlv) {
-        A = factor_opt(nlv[i.nlv], S.list, full = TRUE, quick = FALSE, N = N)
-        Th.out[[i.nlv]] = A$theta
-        Sig.out[[i.nlv]] = A$sigma
-        Loadings[[i.nlv]] = A$loadings
-        res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
-        # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
-        Scores[[i.nlv]] = t(as.matrix(A$loadings)) %*% A$theta %*% t(res.mean)
-    }
+        
+    A = factor_opt(nlv, S.list, full = TRUE, quick = FALSE, N = N)
+    Th.out = A$theta
+    res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
+    # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
+    Scores = t(as.matrix(A$loadings)) %*% A$theta %*% t(res.mean)
     
     BIC.out = logL = NULL
     k = P * nlv + P - nlv * (nlv - 1)/2
-    logL = plyr::laply(Th.out, ll.icov.all, S.list = S.list, n = N)
+    logL = ll.icov.all(Th.out, S.list = S.list, n = N)
     BIC.out = k * log(N) - 2 * logL  -sum(manyglm.obj$two.loglike)
-    
-    
-    return(list( loadings = Loadings, scores = Scores, 
-                 theta = Th.out, sigma = Sig.out,
+  
+    return(list( loadings = A$loadings, scores = Scores, 
+                 theta = Th.out, sigma = A$sigma,
                  BIC = BIC.out, logL = logL,
                  obj=manyglm.obj))
     
 }
 
-# nlv=2 S.list=list(cor(spider$abund)) N=100
 factor_opt = function(nlv, S.list, full = FALSE, quick = FALSE, N) {
     P = dim(S.list[[1]])[1]
     J = length(S.list)

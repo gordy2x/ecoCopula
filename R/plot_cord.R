@@ -19,14 +19,17 @@
 #' cols=ifelse(spider$x[,2]>0,"black","red")
 #' plot(spid_lv,biplot = TRUE,site.col=cols)
 
-plot.cord <- function(obj, biplot = FALSE,site.col="black",sp.col="blue",alpha=0.9,arrow=TRUE, ...) {
+plot.cord <- function(obj, biplot = FALSE,site.col="black",sp.col="blue",alpha=0.7,arrow=TRUE, ...) {
     
+    if(dim(spid_lv$loadings)[2]!=2){
+      stop("plot only possible if number of factors is 2")
+    }
     #species labels from the original data
     labs = colnames(obj$obj$data$abund)
     
     #extract scores and loadings
-    loadings=obj$loadings[[1]][,1:2]
-    scores=t(obj$scores[[1]][1:2,])
+    loadings=obj$loadings[,1:2]
+    scores=t(obj$scores[1:2,])
   
     #calculate scaling factor
     alpha_plot=sqrt(max(apply(scores^2,1,max)))/sqrt(max(apply(loadings^2,1,max)))*alpha
