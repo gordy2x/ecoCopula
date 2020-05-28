@@ -21,8 +21,11 @@
 
 plot.cord <- function(obj, biplot = FALSE,site.col="black",sp.col="blue",alpha=0.7,arrow=TRUE, ...) {
     
+    if(dim(spid_lv$loadings)[2]==1){
+      stop("this function does not plot a single factor")
+    }
     if(dim(spid_lv$loadings)[2]!=2){
-      stop("plot only possible if number of factors is 2")
+      warning("plotting first 2 factors")
     }
     #species labels from the original data
     labs = colnames(obj$obj$data$abund)

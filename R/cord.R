@@ -33,7 +33,7 @@
 #' spider_mod=manyglm(abund~1)
 #' spid_lv=cord(spider_mod)
 #' plot(spid_lv,biplot = TRUE)
-cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
+cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     
     # code chunk from simulate.lm to select seed
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
@@ -52,7 +52,7 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
         stop("n.samp must be an integer")
     
     if (length(nlv) != 1) 
-        stop("nlv must be an integer")
+        warn("nlv must be an integer")
     
     if (floor(nlv) != ceiling(nlv)) 
         stop("nlv must be an integer")
@@ -61,10 +61,31 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     set.seed(seed)
     
     # simulate full set of residulas n.samp times
-    res = simulate.res.S(obj, n.res = n.samp)
+    res = simulate.res.S(manyglm.obj, n.res = n.samp)
     
     # carry out factor analysis
-    out = fact.many(obj, nlv, res)
+    S.list = res$S.list
+    res = res$res
+    P = dim(S.list[[1]])[1]
+    N = dim(manyglm.obj$fitted.values)[1]
+    A = factor_opt(nlv, S.list, full = TRUE, quick = FALSE, N = N)
+    
+    #extract elements
+    Th.out = A$theta
+    res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
+    # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
+    Scores = t(as.matrix(A$loadings)) %*% A$theta %*% t(res.mean)
+    
+    BIC.out = logL = NULL
+    k = P * nlv + P - nlv * (nlv - 1)/2
+    logL = ll.icov.all(Th.out, S.list = S.list, n = N)
+    BIC.out = k * log(N) - 2 * logL  -sum(manyglm.obj$two.loglike)
+    
+    out=list( loadings = A$loadings, scores = Scores, 
+                 theta = Th.out, sigma = A$sigma,
+                 BIC = BIC.out, logL = logL,
+                 obj=manyglm.obj)
+    
     
     class(out) = "cord"
     return(out)
