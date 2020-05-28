@@ -39,11 +39,20 @@
 #' @import mvabund
 #' @export 
 cgr <- function(obj, lambda = NULL, n.lambda = 100, 
-                  n.samp = 500, method="BIC", seed = 1) {
+                  n.samp = 500, method="BIC", seed = NULL) {
     
-    if (!is.numeric(seed)) 
-        stop("seed must be numeric")
-    
+  # code chunk from simulate.lm to select seed
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+      runif(1)
+    if (is.null(seed)) { 
+      RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+    } else {
+      R.seed <- get(".Random.seed", envir = .GlobalEnv)
+      set.seed(seed)
+      RNGstate <- structure(seed, kind = as.list(RNGkind()))
+      on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+    }
+  
     if (floor(n.samp) != ceiling(n.samp)) 
         stop("n.samp must be an integer")
     
@@ -63,7 +72,7 @@ cgr <- function(obj, lambda = NULL, n.lambda = 100,
         stop("please supply an manyglm, manylm, or manyany object")
     
     if (class(obj)[1] == "manyany" & class(obj)[2] != "clm")
-        warning("cgr function ois only tested on manyany with clm or tweedie")
+        warning("cgr function is only tested on manyany with clm or tweedie")
     
     # always same result unless specified otherwise
     set.seed(seed)
@@ -129,15 +138,25 @@ cgr <- function(obj, lambda = NULL, n.lambda = 100,
     }
     
     
+    # find raw correlation matrix by averaging over unweighted residuals
+    P = dim(res$S.list[[1]])[1]
+    array.S = array(unlist(res$S.list), c(P, P, n.samp))
+    precov = cov2cor(apply(array.S, c(1, 2), mean))
+    colnames(precov)=rownames(precov)=colnames(obj$y)
+    
     Th.best = ag$Th.out[[best]]
     Sig.best = ag$Sig.out[[best]]
+    colnames(Th.best)=rownames(Th.best)=colnames(Sig.best)=rownames(Sig.best)=colnames(obj$y)
+    part_cor = -cov2cor(Th.best)
     
     #outputs
     graph.out = as.matrix((Th.best != 0) * 1)
-    best.graph = list(graph = graph.out, prec = Th.best, cov = Sig.best, Y = obj$y, logL = logL[[best]], 
+    best.graph = list(graph = graph.out, prec = Th.best, cov = Sig.best, part=part_cor, Y = obj$y, logL = logL[[best]], 
         sparsity = k.frac[best])
-    all.graphs = list(lambda.opt = lambda[best], logL = logL, BIC = BIC.graph, AIC = AIC.graph, lambda = lambda, k.frac = k.frac)
-    out = list(best_graph = best.graph, all_graphs = all.graphs, obj = obj)
+    all.graphs = list(lambda.opt = lambda[best], logL = logL, BIC = BIC.graph, 
+                      AIC = AIC.graph, lambda = lambda, k.frac = k.frac)
+    raw <- list(cov=precov)
+    out = list(best_graph = best.graph,raw=raw, all_graphs = all.graphs, obj = obj)
     class(out) = "cgr"
     return(out)
     

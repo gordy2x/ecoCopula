@@ -72,6 +72,9 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     
     #extract elements
     Th.out = A$theta
+    Sig.out=A$sigma
+    colnames(Sig.out)=rownames(Sig.out)=colnames(Th.out)=rownames(Th.out)=colnames(manyglm.obj$y)
+    
     res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
     # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
     Scores = t(as.matrix(A$loadings)) %*% A$theta %*% t(res.mean)
@@ -82,9 +85,9 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     BIC.out = k * log(N) - 2 * logL  -sum(manyglm.obj$two.loglike)
     
     out=list( loadings = A$loadings, scores = Scores, 
-                 theta = Th.out, sigma = A$sigma,
-                 BIC = BIC.out, logL = logL,
-                 obj=manyglm.obj)
+              sigma = Sig.out, theta=Th.out,
+              BIC = BIC.out, logL = logL,
+              obj=manyglm.obj)
     
     
     class(out) = "cord"

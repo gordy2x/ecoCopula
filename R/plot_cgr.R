@@ -4,7 +4,7 @@
 #'
 #' @param obj is a cgr object, e.g. from output of cgr.
 #' @param P locations of graph nodes, if NULL (default) these are generated with a Fruchterman Reingold algorithm.
-#' @param ...	other parameters to be passed through to plotting functions, in particular \code{pad}, the amount to pad the plotting range is useful if labels are being clipped.  
+#' @param ...	other parameters to be passed through to plotting gplot, in particular \code{pad}, the amount to pad the plotting range is useful if labels are being clipped.  
 #' @return a plot of species associations after accounting for the effect of all other species, positive/negative are blue/pink.
 #' The matrix of node positions (\code{P}) is returned silently.
 #' @export
@@ -16,11 +16,9 @@
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph)
 
-plot.cgr = function(obj, P = NULL, ...) {
+plot.cgr = function(obj, P = NULL,plot.raw=FALSE, ...) {
     
-    #species labels from the original data
-    labs = colnames(obj$best_graph$Y)
-    
+
     #Partial correlations
     Theta = -cov2cor(obj$best_graph$prec)
     
@@ -39,8 +37,9 @@ plot.cgr = function(obj, P = NULL, ...) {
     }
     
     #plot graph
-    sna::gplot(Graph, gmode = "graph", label = labs, coord = P, vertex.col = "blue", edge.col = posneg, 
-        label.cex = 0.8, edge.lwd = 4, ...)
+    sna::gplot(Graph, gmode = "graph", label = colnames(obj$best_graph$Y), coord = P, 
+               vertex.col = "blue", edge.col = posneg, 
+               label.cex = 0.8, edge.lwd = 4, ...)
     
     #raturn location of nodes
     invisible(P)

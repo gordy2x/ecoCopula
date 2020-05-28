@@ -1,15 +1,13 @@
 ---
-title: "Saint Package"
-author: "Gordana Popovic"
-date: "`r Sys.Date()`"
+title: "ecoCopula - Graphical modelling and ordination with copulas"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Graphical modelling and ordination for discrete data with gaussian copulas.}
+  %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -17,33 +15,32 @@ knitr::opts_chunk$set(
 ```
 
 
+### Overview
 
-## Figures
+The ecoCopula package alows you to visualise multivariate discrete data with grapical models and ordination. The package was designed primarily for multivariate abindance data in ecology, however it can be applied to any multivatiate discrete data. 
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+The two main functions are:
+
+1. Copula graphical models (`cgr`) allow you to plot a *graph* which distinguishes between direct and indeirect relationships between variables (species).
+2. Copula ordination (`cord`) allows you to visualise how samples (sites) and variables (species) are located along several latent variables (unobserved environmental gradient).
+
+To install ecoCopula is unfortunately a little annoying due to the mvabund package, on which it relies, throwing a warning, but this code generally works. If you have trouble please [email me](g.popovic@unsw.edu.au) for assistance.
+
+### Installation
+
+```{r eval=FALSE, include=TRUE}
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)
+devtools::install_github("gordy2x/ecoCopula",dependencies = FALSE)
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = FALSE)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+### Inside the black box 
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+### Copula graphical models (`cgr`)
+```{r setup}
+library(ecoCopula)
 ```
 
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+### Copula ordination (`cord`)
