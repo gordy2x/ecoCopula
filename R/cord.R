@@ -84,7 +84,7 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     logL = ll.icov.all(Th.out, S.list = S.list, n = N)
     BIC.out = k * log(N) - 2 * logL  -sum(manyglm.obj$two.loglike)
     
-    out=list( loadings = A$loadings, scores = Scores, 
+    out=list( loadings = A$loadings[], scores = t(Scores), 
               sigma = Sig.out, theta=Th.out,
               BIC = BIC.out, logL = logL,
               obj=manyglm.obj)

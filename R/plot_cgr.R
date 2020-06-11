@@ -36,8 +36,14 @@ plot.cgr = function(obj, P = NULL,plot.raw=FALSE, ...) {
         P = sna::gplot.layout.fruchtermanreingold(Graph, list())
     }
     
+    if(any(class(obj$obj) == "manyany")){
+        labs <- names(obj$obj$params)
+    }else{
+        labs <- colnames(obj$best_graph$Y)
+    }
+    
     #plot graph
-    sna::gplot(Graph, gmode = "graph", label = colnames(obj$best_graph$Y), coord = P, 
+    sna::gplot(Graph, gmode = "graph", label = labs, coord = P, 
                vertex.col = "blue", edge.col = posneg, 
                label.cex = 0.8, edge.lwd = 4, ...)
     

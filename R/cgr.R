@@ -144,15 +144,22 @@ cgr <- function(obj, lambda = NULL, n.lambda = 100,
     precov = cov2cor(apply(array.S, c(1, 2), mean))
     colnames(precov)=rownames(precov)=colnames(obj$y)
     
+    if(any(class(obj) == "manyany")){
+      labs <- names(obj$params)
+    }else{
+      labs <- colnames(obj$y)
+    }
+    
     Th.best = ag$Th.out[[best]]
     Sig.best = ag$Sig.out[[best]]
-    colnames(Th.best)=rownames(Th.best)=colnames(Sig.best)=rownames(Sig.best)=colnames(obj$y)
+    colnames(Th.best)=rownames(Th.best)=colnames(Sig.best)=rownames(Sig.best)=labs
     part_cor = -cov2cor(Th.best)
-    
+    g<-graph_from_partial(part_cor)
     #outputs
+    
     graph.out = as.matrix((Th.best != 0) * 1)
     best.graph = list(graph = graph.out, prec = Th.best, cov = Sig.best, part=part_cor, Y = obj$y, logL = logL[[best]], 
-        sparsity = k.frac[best])
+        sparsity = k.frac[best],igraph_out=g)
     all.graphs = list(lambda.opt = lambda[best], logL = logL, BIC = BIC.graph, 
                       AIC = AIC.graph, lambda = lambda, k.frac = k.frac)
     raw <- list(cov=precov)
