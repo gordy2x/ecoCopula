@@ -16,7 +16,11 @@ library(ecoCopula)
 example(cord)
 example(cgr)
 
+<<<<<<< HEAD
 If you have a problem installing, please email me (g.popovic@unsw.edu.au). 
+=======
+devtools::install_github("gordy2x/ecoCopula")
+>>>>>>> af45c0078a35f37aaf66cf4bffd48754613d0bd2
 
 ### Author
 
