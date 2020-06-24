@@ -28,5 +28,4 @@ LGPL (>= 2.1)
 
 ### Tutorial
 
-[ecoCopula tutorial](vignettes/tutorial.html){:target="_blank" rel="noopener"}
-
+[ecoCopula tutorial](vignettes/tutorial.html)
