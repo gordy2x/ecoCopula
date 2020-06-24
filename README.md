@@ -28,4 +28,4 @@ LGPL (>= 2.1)
 
 ### Tutorial
 
-[ecoCopula tutorial](vignettes/tutorial.html)
+[ecoCopula tutorial](https://gordy2x.github.io/ecoCopula/vignettes/tutorial.html)
