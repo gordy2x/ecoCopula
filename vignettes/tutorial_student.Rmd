@@ -1,0 +1,406 @@
+---
+title: "ecoCopula - Graphical modelling and ordination with copulas"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r  include=FALSE}
+knitr::opts_chunk$set(
+  fig.width=6, fig.height=6,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### Overview
+
+The ecoCopula package allows you to visualise multivariate discrete data with graphical models and ordination. The package was designed primarily for multivariate abundance data in ecology, however it can be applied to any multivariate discrete data. 
+
+The two main functions are:
+
+1. Copula graphical models (`cgr`) allow you to plot a *graph* which distinguishes between direct and indirect relationships between variables (species).
+2. Copula ordination (`cord`) allows you to visualise how samples (sites) and variables (species) are located along several latent variables (unobserved environmental gradient).
+
+To install ecoCopula is unfortunately a little annoying due to the mvabund package, on which it relies, throwing a warning, which gets converted to an error. This code generally works. If you have trouble please [email me](g.popovic@unsw.edu.au) for assistance.
+
+### Installation
+
+```{r eval=FALSE, include=TRUE}
+# Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)
+# devtools::install_github("gordy2x/ecoCopula",upgrade = "always")
+# Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(tidyr)
+library(dplyr)
+```
+
+### Bryce Canyon Vegetation Data
+
+Estimates of cover class for all non-tree vascular plant species in 160 375m^2 circular sample plots. Species codes are first three letters of genus then first three letters of specific epithet.
+
+```{r message=FALSE, warning=FALSE}
+rm(list=ls())
+
+library(labdsv)
+data(brycesite)
+rem=c(109)
+X=brycesite
+X$plotcode=substr(X$plotcode,3,5)
+data(bryceveg)
+old <- c(0.2,0.5,1.0,2.0,3.0,4.0,5.0,6.0)
+new <- c(0.2,0.5,3.0,15.0,37.5,62.5,85.0,97.5)
+bryceveg <- abundtrans(bryceveg,old,new)
+bryce<- bryceveg[,-which(colSums(bryceveg>0) <= 20)] #most abundant species
+bryce=bryce[-rem,]
+X<-X[-rem,]
+bryce[1:6,1:8]
+```
+
+### Questions of interest to explore visually
+
+1. How does species abundance and composition vary across sites?
+2. Is this variation related to environmental variables (and how)?
+3. Which species (taxa to be more accurate) are associated with each other (abundances are correlated across sites)?
+4. Are species associated directly (interacting?) or indirectly (though mediator species) or due to both responding to common environmental variables. 
+
+Note: I will use the word species, but what I mean is taxa (your data may not be classified to species level).
+
+### Visualisation do's and dont's
+
+- **Do** form hypotheses (research questions) during the study design phase, **before** collecting data, and **well before** plotting.
+- **Do not** plot data, then decide which hypothesis tests to do on the same data (a form of-hacking).
+- **Do** plot data to visualise and confirm relationships from your inference (before or after inference).
+- **Do** visually explore your data after testing hypothesis of interest to generate hypotheses for **further study**.
+- When plotting **do** look at both multivariate and marginal (univariate) plots.
+
+### Visualisations
+For questions 1 and 2 we might want to look at 'correlations' between sites.
+
+```{r message=FALSE, warning=FALSE}
+library(corrplot)
+corrplot(cor(t(bryce)),diag = FALSE,tl.cex=0.3)
+```
+
+For questions 3 and 4 we could look at 'correlations' between species.
+```{r}
+library(corrplot)
+corrplot(cor(bryce),diag = FALSE,tl.cex=0.7)
+```
+
+Two problems
+
+1. Ordinal, shouldn't really use correlation - should model data as ordinal instead 
+2. It is hard to see any patterns, especially when there are many species/sites.
+
+### Modelling ordinal data
+
+We can do this using the `mvabund` package, with function `manyany` as well as `clm` from the `ordinal` package. Sadly R version 4.0.0 has broken `manyany`, and it has not been fixed yet, so I have a substitute called `Manyany` in the `Manyany.R` file which we will need to sourced in the code below. 
+```{r message=FALSE, warning=FALSE}
+library(ordinal)
+library(mvabund)
+source('Manyany.R')
+bryce_ord<-bryce
+for(iVar in 1:dim(bryce_ord)[2])
+  bryce_ord[,iVar]=factor(bryce_ord[,iVar])
+#Now fit a model using the clm function:
+bryce_mod0=Manyany("clm",bryce_ord,abund~1,data=X) # usually manyany but has bug for R 4.0.0, will be fixed
+plot(bryce_mod0)
+```
+
+Residuals look great, so we know the model we fit is reasonable. Now let's look at ordinations using this model.
+
+## Hypotheses
+We have two hypotheses.
+
+- Primary:  Elevation of sites affect abundance of species.
+- Secondary: The effect of elevation persist after controlling for northing.
+
+And want to generate hypotheses about species interactions in this community.
+
+
+### Multivariate plot - ordination 
+```{r}
+library(ecoCopula)
+ord_cord<-cord(bryce_mod0)
+plot(ord_cord,biplot=TRUE)
+```
+
+This is an ordination *biplot*, it plots all the sites and the species on a set of axes. The axes are derived from the data such that they explain as much variation about this high dimensional space as possible using only two axes.
+
+There are 'groups' of sites (e.g. bottom right corner, 51,69 etc.), and are categorised by high abundance of the species which point towards them (e.g. arcpat) and low abundance of the species that point in the opposite direction (e.g. chrvis).
+
+To see if there is a pattern in site abundances in terms of elevation, we can colour the sites.
+
+```{r}
+sites=ifelse(X$elev>8000,"red","black")
+plot(ord_cord,site.col = sites)
+```
+
+So those sites on the bottom right seem to be those at high elevations. They are close together on the ordination plot, so species abundances don't vary as much between them. Form this we can visually see that abundance of species varies by elevation.
+
+If we want to have fancier plots, we can use `ggplot`. First we need to create data frames for the sites and species, with relevant variables that you may want to plot.
+
+```{r}
+site_res <- data.frame(ord_cord$scores,X)
+sp_res <- data.frame(ord_cord$loadings,
+                     species = colnames(bryce_ord),
+                     genus = substr(colnames(bryce_ord),1,3))
+```
+
+Then it's just a matter of letting ggplot do its magic (if you're not familiar with ggplot, the above plots are enough, but ggplot is a good tool to learn in general for nice plots).
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot()+
+  geom_text(aes(x=Factor1,y=Factor2,color = elev,label =plotcode ),site_res)+
+  theme_bw()
+```
+
+We can also add the species, here coloured by their genus.
+
+```{r}
+ggplot()+
+  geom_segment(aes(x=0,y=0, xend = Factor1, yend = Factor2,color = ),sp_res)+
+  geom_text(aes(x = Factor1, y = Factor2,label = species,color=genus),data=sp_res)
+```
+
+Be as fancy as you want.
+
+```{r}
+library(RColorBrewer)
+alpha= 2.5
+ggplot()+
+  geom_point(aes(x=Factor1,y=Factor2,color = elev ),site_res)+
+  geom_text(aes(x = Factor1*alpha, y = Factor2*alpha,label = species),data=sp_res)+
+  scale_color_gradientn(colours = brewer.pal(n = 10, name = "PuOr"))+
+  theme_classic()
+```
+
+That all gives us a plot to try to answer the question *Is this variation related to environmental variables* , but not *(and how)*? 
+
+### Univariate plots - the how
+
+This bit has nothing to do with `ecoCopula`, but if you want to know how abundance differs along environmental gradients, univariate plots help a lot.
+
+```{r}
+
+bryce_long<- data.frame(X,bryce) %>% 
+  pivot_longer(-(1:ncol(X)),names_to="species",values_to="cover") %>% 
+  mutate(present = ifelse(cover>0,"present","absent")) %>% 
+  select(species,elev,cover,present) 
+
+bryce_long %>% 
+  ggplot(aes(x=elev,y=cover,color=present))+
+  facet_wrap(~species)+
+  scale_y_log10()+
+  geom_point()+
+  theme(axis.ticks = element_blank(), axis.text = element_blank())
+
+```
+
+So for example, juncom is never present at low elevations, but commonly present at high elevations.
+
+### Residual ordination
+
+You can also look at an ordination after controlling for one or more covariates. This can give you an idea if there is an effect of a variable after controlling for something else. For example, the secondary questions asks if elevation affects abundance after controlling for northing. To visualise this we fit a model controlling for northing, and then colour sites by elevation. 
+
+```{r}
+X$north=scale(X$north)
+bryce_mod=Manyany("clm",bryce_ord,abund~north,data=X)
+bryce_res<- cord(bryce_mod)
+sites=ifelse(X$elev> 8000,"red","black")
+plot(bryce_res, site.col = sites)
+```
+
+Elevation does still seem to have an effect, but part of the variation by elevation seems to have been explained by northing.  
+
+### Hypothesis tests
+It does seem from both the univariate and multivariate plots that elevation has an effect on abundance. Let's formally test this hypothesis.
+
+This is quite slow so don't run unless you have 2 minutes, and I have had to rescale elevation to make it numerically stable (manyany told me to when I tried to run it without).
+
+```{r eval=FALSE}
+X$scaled_elev=scale(X$elev) # warnng message from manyany
+bryce_mod0=Manyany("clm",bryce_ord,abund~1,data=X)
+bryce_mod=Manyany("clm",bryce_ord,abund~scaled_elev,data=X)
+anova(bryce_mod0,bryce_mod)
+```
+
+P value is very small, so we have strong evidence that elevation affects abundance of species.
+
+Next we can test if this effect persists after controlling for northing. Again I won't run it.
+
+```{r eval=FALSE}
+X$scaled_north=scale(X$north) # warnng message from manyany
+bryce_mod=Manyany("clm",bryce_ord,abund~scaled_elev,data=X)
+bryce_mod2=Manyany("clm",bryce_ord,abund~scaled_elev+scaled_north,data=X)
+anova(bryce_mod,bryce_mod2)
+```
+
+P value is again very small, so we have strong evidence that elevation affects abundance of species even after controlling for northing.
+
+### ecoCopula with presence/absence and counts
+
+This is even easier than with ordinal data, just use manyglm instead of manyany. For example, converting these data to presence/absence.
+
+```{r}
+bryce_pa <- ifelse(bryce>0,1,0)
+colnames(bryce_pa)<-colnames(bryce)
+bryce_pa_mod=manyglm(bryce_pa~1, family="binomial")
+pa_bryce<- cord(bryce_pa_mod)
+plot(pa_bryce)
+```
+
+Unsurprisingly a pretty similar picture using presence-absence rather than ordinal cover categories.
+
+### Questions again
+
+1. *How does species abundance and composition vary across sites?*
+2. *Is this variation related to environmental variables (and how)?*
+3. *Which species are associated with each other (abundances are correlated across sites)?* - partly
+4. Do a formal hypothesis test.
+5. Are species associated directly (interacting?) or indirectly (though mediator species) or due to both responding to common environmental variables.
+
+## Graphical models
+
+Another way to look at question 3 is with graphical models.
+
+```{r}
+bryce_mod0=Manyany("clm",bryce_ord,abund~1,data=X) # same as for ordination
+ord_graph0<-cgr(bryce_mod0, seed = 2) #seed for demonstration
+plot(ord_graph0, pad=1)
+```
+
+Without controlling for any environmental variables, many species appear to be directly and indirectly related. This is based on the pattern of their correlation. However, we know many of these species are correlated (tend to either appear at the same sites, or tend not to appear at the same sites) due to responses to environmental variables (in this case elevation among others), not because they interact with one another.
+
+We can have a look at the graph after controlling for elevation to see what species are still associated after first controlling for elevation.
+
+```{r}
+X$scaled_elev <- scale(X$elev)
+bryce_mod1=Manyany("clm",bryce_ord,abund~scaled_elev,data=X) # same as for ordination
+ord_graph1<-cgr(bryce_mod1, seed = 1) #seed for demonstration
+plot(ord_graph1,pad=1)
+```
+
+It is important to note that we still can't say that these species are interacting, as we may not have measured all the relevant environmental variables or species we need to control for. But we can see that after controlling for elevation, quegam is directly (and positively) related to cermon, and cermon is directly (and negatively) related to sithys, and hence quegam is indirectly related to sithys (due to both responding to the abundance of cermon).
+
+You now have yourself a hypotheses which you can test (in a later study!) about the biotic interactions between these species.
+
+If you want a fancier graph, the package outputs an `igraph` object, which you can then manipulate with the `igraph` package or the `tidygraph` and `ggraph` addons to `ggplot`.
+
+```{r message=FALSE, warning=FALSE}
+igraph_out<-ord_graph0$best_graph$igraph_out
+
+library(tidyr)
+library(tidygraph)
+library(ggraph)
+
+
+igraph_out %>% ggraph('fr') + # see ?layout_tbl_graph_igraph
+    geom_edge_fan0(aes( colour = partcor, width=partcor)) +
+    scale_edge_width(range = c(0.5, 3))+
+    scale_edge_color_gradient2(low="#b2182b",mid="white",high="#2166ac")+
+    geom_node_text(aes(label=name), repel = TRUE)+
+    geom_node_point(aes(size=1.3))+
+    theme_void() +
+    theme(legend.position = 'none')
+
+```
+
+In this graph I have set both the color and the width of the edges to depend on the strength of the partial correlation. So you can see a strong positive (direct) association between euplur and arcpat, but only a weak negative (direct) association between arcpat and chrvis.
+
+### Challenge
+
+We will use the spider data (from the mvabund) to try some challenges. It has counts of 12 hunting spiders at 28 sites, collected using pit traps. 
+
+Hypothesis: **Spider abundance varies according to the presence of bare sand**. 
+
+1. How does species abundance for hunting spiders vary across sites?
+2. Is this variation related to the presence of bare sand (and how)?
+3. Which species are associated with each other (abundances are correlated across sites)?
+4. Are species associated directly (interacting?) or indirectly (though mediator species) or due to both responding similarly to bare sand. 
+6. Do a formal test of the hypothesis.
+
+Read in data
+
+```{r}
+data(spider)
+abund <- mvabund(spider$abund)
+```
+
+There are also some environmental variables.
+
+```{r}
+X <- as.data.frame(spider$x)
+X$any_bare_sand = X$bare.sand>0
+```
+
+For the challenge, use the built in plotting functions first, then when you've done them all you can try to make fancy ggplots.
+
+#### 1. How does species abundance for hunting spiders vary across sites?
+
+a. Create an ordination plot from the spider data (without controlling for any covariates). 
+
+```{r}
+
+```
+
+
+####2. Is this variation related to the presence of bare sand (and how)?
+
+a. Colour the sites according to the presence of bare sand `any_bare_sand`.
+
+```{r}
+
+```
+
+b. Create some marginal plots (species by species) to see how their abundance changes with the presence of bare sand. 
+
+```{r}
+nsp=ncol(spider$abund)
+dat=data.frame(spider$abund,X)
+
+dat%>% 
+  pivot_longer(cols=1:nsp,names_to = "Species", values_to = "abund") %>% 
+  ggplot(aes(y=Species,x=abund+1,fill=any_bare_sand))+ 
+    geom_boxplot()+
+    scale_x_log10()+
+    theme_classic()
+    
+```
+
+#### 3. Which species are associated with each other (abundances are correlated across sites)?
+
+a. Create an ordination plot from the spider data (without controlling for any covariates) and plot a biplot. 
+
+```{r}
+
+```
+
+b. Plot the graph.
+
+```{r}
+
+```
+
+#### 4. Do a formal test of the hypothesis.
+
+```{r}
+
+```
+
+#### 5. Are species associated directly (interacting?) or indirectly (though mediator species) or due to both responding similarly to bare sand. 
+
+a. Plot graphical model after controlling for all covariates.
+
+```{r}
+
+```
+
+
+
