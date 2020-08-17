@@ -143,7 +143,9 @@ graph_from_partial<-function(partial){
   diag(partial)<-0
   vertex <- data.frame(name = colnames(partial))
   Edges=igraph::as_data_frame(igraph::graph_from_adjacency_matrix(partial,mode="undirected",weighted = TRUE))
-  colnames(Edges)[3]<- "partcor"
+  if(ncol(Edges)==3){
+    colnames(Edges)[3]<- "partcor"
+  }
   
   igraph::graph_from_data_frame(Edges, directed=FALSE, vertices=vertex)
 }
