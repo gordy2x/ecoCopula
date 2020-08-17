@@ -28,4 +28,8 @@ LGPL (>= 2.1)
 
 ### Tutorial
 
+<<<<<<< HEAD
 [ecoCopula tutorial](vignettes/tutorial.html){:target="_blank" rel="noopener"}
+=======
+[ecoCopula tutorial](https://gordy2x.github.io/ecoCopula/vignettes/tutorial.html)
+>>>>>>> 71d58b0d7a17b4ab3b993bf670da36f5dc9bcce1
