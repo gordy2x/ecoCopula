@@ -2,20 +2,21 @@
 % Please edit documentation in R/plot_cord.R
 \name{plot.cord}
 \alias{plot.cord}
-\title{Plots an ordination plot of latent variables and their corresponding coefficients (biplot).}
+\title{Plots an ordination of latent variables and their corresponding coefficients (biplot).}
 \usage{
 \method{plot}{cord}(
-  obj,
+  x,
   biplot = FALSE,
   site.col = "black",
   sp.col = "blue",
-  alpha = 0.9,
+  alpha = 0.7,
   arrow = TRUE,
+  labels = dimnames(x$obj$fitted.values),
   ...
 )
 }
 \arguments{
-\item{obj}{is a cord object, e.g. from output of \code{cord}}
+\item{x}{is a cord object, e.g. from output of \code{cord}}
 
 \item{biplot}{\code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables}
 
@@ -27,13 +28,15 @@
 
 \item{arrow}{should arrows be plotted for species loadings (default is TRUE)}
 
+\item{labels}{the labels for sites and species (for biplots only) (default is data labels)}
+
 \item{...}{other parameters to be passed through to plotting functions.}
 }
 \value{
 an ordination plot.
 }
 \description{
-Plots an ordination plot of latent variables and their corresponding coefficients (biplot).
+Plots an ordination of latent variables and their corresponding coefficients (biplot).
 }
 \examples{
 data(spider)
