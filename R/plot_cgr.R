@@ -2,7 +2,7 @@
 
 #' Plot graph of direct species associations.
 #'
-#' @param obj is a cgr object, e.g. from output of \code{\link{cgr}}.
+#' @param x is a cgr object, e.g. from output of \code{\link{cgr}}.
 #' @param P locations of graph nodes, if NULL (default) these are generated with a Fruchterman Reingold algorithm.
 #' @param vary.edge.lwd is logical, default (TRUE) will let edges vary in width according to the stength of partial correlation, otherwise constant width.
 #' @param edge.col takes two colours as arguments - the first is the colour used for positive partial correlations, the second is the colour of negative partial correlations.
@@ -24,12 +24,12 @@
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph)
 
-plot.cgr = function(obj, P = NULL, vary.edge.lwd=TRUE, edge.col = c("light blue","pink"),
-                    label = colnames(obj$obj$fitted.values), vertex.col = "blue",  
+plot.cgr = function(x, P = NULL, vary.edge.lwd=TRUE, edge.col = c("light blue","pink"),
+                    label = colnames(x$obj$fitted.values), vertex.col = "blue",  
                     label.cex = 0.8, edge.lwd = ifelse(vary.edge.lwd,10,4), edge.lty=c(1,1), ...) {
     
     #Partial correlations
-    Theta = -cov2cor(obj$best_graph$prec)
+    Theta = -cov2cor(x$best_graph$prec)
     
     #graph of partial correlations
     Graph = (Theta != 0) * 1
@@ -45,12 +45,6 @@ plot.cgr = function(obj, P = NULL, vary.edge.lwd=TRUE, edge.col = c("light blue"
         P = sna::gplot.layout.fruchtermanreingold(Graph, list())
     }
     
-    if(any(class(obj$obj) == "manyany")){
-        labs <- names(obj$obj$params)
-    }else{
-        labs <- colnames(obj$best_graph$Y)
-    }
-
     if(vary.edge.lwd) Graph=Theta #to plot Theta if varying line width desired
 
     #plot graph
