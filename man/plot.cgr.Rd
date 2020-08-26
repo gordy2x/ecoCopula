@@ -4,14 +4,39 @@
 \alias{plot.cgr}
 \title{Plot graph of direct species associations.}
 \usage{
-\method{plot}{cgr}(obj, P = NULL, ...)
+\method{plot}{cgr}(
+  obj,
+  P = NULL,
+  vary.edge.lwd = TRUE,
+  edge.col = c("light blue", "pink"),
+  label = colnames(obj$obj$fitted.values),
+  vertex.col = "blue",
+  label.cex = 0.8,
+  edge.lwd = ifelse(vary.edge.lwd, 10, 4),
+  edge.lty = c(1, 1),
+  ...
+)
 }
 \arguments{
-\item{obj}{is a cgr object, e.g. from output of cgr.}
+\item{obj}{is a cgr object, e.g. from output of \code{\link{cgr}}.}
 
 \item{P}{locations of graph nodes, if NULL (default) these are generated with a Fruchterman Reingold algorithm.}
 
-\item{...}{other parameters to be passed through to plotting functions, in particular \code{pad}, the amount to pad the plotting range is useful if labels are being clipped.}
+\item{vary.edge.lwd}{is logical, default (TRUE) will let edges vary in width according to the stength of partial correlation, otherwise constant width.}
+
+\item{edge.col}{takes two colours as arguments - the first is the colour used for positive partial correlations, the second is the colour of negative partial correlations.}
+
+\item{label}{is a vector of labels to apply to each variable, defaulting to the column names supplied in the data.}
+
+\item{vertex.col}{the colour of graph nodes.}
+
+\item{label.cex}{is the size of labels.}
+
+\item{edge.lwd}{is line width, defaulting to 10*partial correlation when varying edge width, and 4 otherwise.}
+
+\item{edge.lty}{is a vector of two integers specifying the line types for positive and negative partial correlations, respectively. Both default to solid lines.}
+
+\item{...}{other parameters to be passed through to plotting gplot, in particular \code{pad}, the amount to pad the plotting range is useful if labels are being clipped. For details see the \code{\link[sna:gplot]{gplot}} help file.}
 }
 \value{
 a plot of species associations after accounting for the effect of all other species, positive/negative are blue/pink.
@@ -27,4 +52,7 @@ X <- spider$x
 spider_mod=manyglm(abund~1)
 spid_graph=cgr(spider_mod)
 plot(spid_graph)
+}
+\seealso{
+\code{\link{gplot}}, \code{\link{cgr}}
 }
