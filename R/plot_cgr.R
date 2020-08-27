@@ -4,7 +4,7 @@
 #'
 #' @param x is a cgr object, e.g. from output of \code{\link{cgr}}.
 #' @param P locations of graph nodes, if NULL (default) these are generated with a Fruchterman Reingold algorithm.
-#' @param vary.edge.lwd is logical, default (TRUE) will let edges vary in width according to the stength of partial correlation, otherwise constant width.
+#' @param vary.edge.lwd is logical, TRUE will vary line width according to the strength of partial correlation, default (FALSE) uses fixed line width.
 #' @param edge.col takes two colours as arguments - the first is the colour used for positive partial correlations, the second is the colour of negative partial correlations.
 #' @param label is a vector of labels to apply to each variable, defaulting to the column names supplied in the data. 
 #' @param vertex.col the colour of graph nodes. 
@@ -24,7 +24,7 @@
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph)
 
-plot.cgr = function(x, P = NULL, vary.edge.lwd=TRUE, edge.col = c("light blue","pink"),
+plot.cgr = function(x, P = NULL, vary.edge.lwd=FALSE, edge.col = c("light blue","pink"),
                     label = colnames(x$obj$fitted.values), vertex.col = "blue",  
                     label.cex = 0.8, edge.lwd = ifelse(vary.edge.lwd,10,4), edge.lty=c(1,1), ...) {
     
