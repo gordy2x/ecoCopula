@@ -3,13 +3,12 @@
 #' @param object is a cord object, e.g. from output of \code{cord}
 #' @param nsim Number of simulations, defaults to 1.
 #' @param seed Random number seed, defaults to a random seed number.
-#' @param newdata A data frame in which to look for variables with which to simulate.
-#' Defaults to the variables in the fitted model.
+#' @param newdata A data frame in which to look for X covariates with which to simulate.
+#' Defaults to the X covariates in the fitted model.
 #' @param reshape2matrix logical. Returns a matrix of simulated data if TRUE or nsim == 1.
 #' If TRUE and nsim > 1, the simulated data will be appended and returned as a matrix.
-#' Returns a 3-d array of simulated data if FALSE. 
-#' If FALSE and nsim > 1, each simulation is returned along the third dimension.
-#' Defaults to TRUE.
+#' Returns a 3-d array of simulated data if FALSE and nsim > 1. Each simulation is returned
+#' along the third dimension. Defaults to TRUE.
 #' @export
 #' @examples
 #' data(spider)
@@ -18,6 +17,9 @@
 #' spider_mod=manyglm(abund~1)
 #' spid_lv=cord(spider_mod)
 #' simulate(spid_lv)
+#' Xnew = data.frame(X[1:10,])
+#' simulate(spid_lv, newdata = Xnew)
+#' simulate(spid_lv, nsim=2, newdata = Xnew)
 
 
 simulate.cord = function(object, nsim=1, seed=NULL, 
