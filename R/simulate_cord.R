@@ -58,7 +58,7 @@ predict_responses = function(object, newdata) {
     } else if (object$obj$family == "binomial(link=cloglog)") {
       prs = binomial(link="cloglog")$linkinv(design.matrix%*%coeffs)
     } else {
-      stop("'family'", object$family, "not recognized")
+      stop("'family'", object$obj$family, "not recognized")
     }
   } else if (object$obj$call[[1]] == "manylm") {
     prs = predict.manylm(object$obj, type = "response")
@@ -89,7 +89,7 @@ simulate_newY = function(object, nsim, prs) {
         } else if (object$obj$call$family == "binomial") {
           newY[,j,k] = qbinom(pnorm(sim[,j]), size = 1, prob = prs[,j])
         } else {
-          stop("'family'", object$family, "not recognized")
+          stop("'family'", object$obj$family, "not recognized")
         }
       }
     }
