@@ -52,17 +52,22 @@ predict_responses = function(object, newdata) {
   if (object$obj$call[[1]] == "manyglm") {
     design.matrix = model.matrix(object$obj$formula[-2], data=newdata)
     coeffs = coef(object$obj)
-
-    if (object$obj$family == "negative.binomial") {
-      prs = MASS::negative.binomial(theta=1)$linkinv(design.matrix%*%coeffs)
-    } else if (object$obj$family == "poisson") {
-      prs = poisson(link="log")$linkinv(design.matrix%*%coeffs)
-    } else if (object$obj$family == "binomial(link=logit)") {
-      prs = binomial(link="logit")$linkinv(design.matrix%*%coeffs)
-    } else if (object$obj$family == "binomial(link=cloglog)") {
-      prs = binomial(link="cloglog")$linkinv(design.matrix%*%coeffs)
+    if (ncol(design.matrix) != nrow(coeffs)) {
+      prs = suppressWarnings(
+        predict.manyglm(object$obj, type = "response", newdata = newdata)
+      ) # warning for family=poisson suppressed
     } else {
-      stop("'family'", object$obj$family, "not recognized")
+      if (object$obj$family == "negative.binomial") {
+        prs = MASS::negative.binomial(theta=1)$linkinv(design.matrix%*%coeffs)
+      } else if (object$obj$family == "poisson") {
+        prs = poisson(link="log")$linkinv(design.matrix%*%coeffs)
+      } else if (object$obj$family == "binomial(link=logit)") {
+        prs = binomial(link="logit")$linkinv(design.matrix%*%coeffs)
+      } else if (object$obj$family == "binomial(link=cloglog)") {
+        prs = binomial(link="cloglog")$linkinv(design.matrix%*%coeffs)
+      } else {
+        stop("'family'", object$obj$family, "not recognized")
+      }
     }
   } else if (object$obj$call[[1]] == "manylm") {
     prs = predict.manylm(object$obj, type = "response", newdata = newdata)
