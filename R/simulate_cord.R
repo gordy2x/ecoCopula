@@ -12,14 +12,18 @@
 #' @export
 #' @examples
 #' data(spider)
-#' abund <- mvabund(spider$abund)
-#' X <- spider$x
-#' spider_mod=manyglm(abund~1)
-#' spid_lv=cord(spider_mod)
+#' abund = mvabund(spider$abund)
+#' X = data.frame(spider$x)
+#'
+#' spider_mod = manyglm(abund~1)
+#' spid_lv = cord(spider_mod)
 #' simulate(spid_lv)
-#' Xnew = data.frame(X[1:10,])
-#' simulate(spid_lv, newdata = Xnew)
-#' simulate(spid_lv, nsim=2, newdata = Xnew)
+#'
+#' spider_mod_X = manyglm(abund ~ soil.dry + bare.sand, data=X)
+#' spid_lv_X = cord(spider_mod_X)
+#' Xnew = X[1:10,]
+#' simulate(spid_lv_X, newdata = Xnew)
+#' simulate(spid_lv_X, nsim=2, newdata = Xnew)
 
 
 simulate.cord = function(object, nsim=1, seed=NULL, 
@@ -48,7 +52,7 @@ predict_responses = function(object, newdata) {
   if (object$obj$call[[1]] == "manyglm") {
     design.matrix = model.matrix(object$obj$formula[-2], data=newdata)
     coeffs = coef(object$obj)
-    
+
     if (object$obj$family == "negative.binomial") {
       prs = MASS::negative.binomial(theta=1)$linkinv(design.matrix%*%coeffs)
     } else if (object$obj$family == "poisson") {
@@ -61,7 +65,7 @@ predict_responses = function(object, newdata) {
       stop("'family'", object$obj$family, "not recognized")
     }
   } else if (object$obj$call[[1]] == "manylm") {
-    prs = predict.manylm(object$obj, type = "response")
+    prs = predict.manylm(object$obj, type = "response", newdata = newdata)
   } else {
     stop("'class'", class(object$obj), "not supported")
   }
@@ -80,14 +84,14 @@ simulate_newY = function(object, nsim, prs) {
   # turn simulated variables into abundances
   for (k in 1:nsim) {
     if (object$obj$call[[1]] == "manyglm") {
-      for (j in 1:nVar) {
+      for (iVar in 1:nVar) {
         if (object$obj$family == "negative.binomial") {
           size = object$obj$theta
-          newY[,j,k] = qnbinom(pnorm(sim[,j]), size = size[j], mu = prs[,j])
+          newY[,iVar,k] = qnbinom(pnorm(sim[,iVar]), size = size[iVar], mu = prs[,iVar])
         } else if (object$obj$family == "poisson") {
-          newY[,j,k] = qpois(pnorm(sim[,j]), lambda = prs[,j])
+          newY[,iVar,k] = qpois(pnorm(sim[,iVar]), lambda = prs[,iVar])
         } else if (object$obj$call$family == "binomial") {
-          newY[,j,k] = qbinom(pnorm(sim[,j]), size = 1, prob = prs[,j])
+          newY[,iVar,k] = qbinom(pnorm(sim[,iVar]), size = 1, prob = prs[,iVar])
         } else {
           stop("'family'", object$obj$family, "not recognized")
         }
@@ -97,8 +101,8 @@ simulate_newY = function(object, nsim, prs) {
     if (object$obj$call[[1]] == "manylm") {
       df.residual = object$obj$df.residual
       sigma2 = apply((object$obj$y - object$obj$fitted)^2, 2, sum)/df.residual
-      for (j in 1:nVar) {
-        newY[,j,k] = sim[,j] * sqrt(sigma2[j])
+      for (iVar in 1:nVar) {
+        newY[,iVar,k] = sim[,iVar] * sqrt(sigma2[iVar])
       }
       newY[,,k] = newY[,,k] + prs
     }
