@@ -83,11 +83,11 @@ simulate_newY = function(object, nsim, prs) {
   nVar = ncol(prs)
   newY = array(NA, c(nRow, nVar, nsim))
 
-  # simulate multivariate normal random variables
-  sim = MASS::mvrnorm(nRow, mu = rep(0, times = nVar), object$sigma)
-
-  # turn simulated variables into abundances
   for (k in 1:nsim) {
+    # simulate multivariate normal random variables
+    sim = MASS::mvrnorm(nRow, mu = rep(0, times = nVar), object$sigma)
+
+    # turn simulated variables into abundances
     if (object$obj$call[[1]] == "manyglm") {
       for (iVar in 1:nVar) {
         if (object$obj$family == "negative.binomial") {
