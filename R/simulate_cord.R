@@ -9,6 +9,8 @@
 #' If TRUE and nsim > 1, the simulated data will be appended and returned as a matrix.
 #' Returns a 3-d array of simulated data if FALSE and nsim > 1. Each simulation is returned
 #' along the third dimension. Defaults to TRUE.
+#' @param coeffs Coefficient matrix for a `manyglm` object that characterises the size of effects
+#' to be simulated. Defaults to the coefficient matrix from the object `coef(object$obj)`.
 #' @export
 #' @examples
 #' data(spider)
@@ -27,7 +29,7 @@
 
 
 simulate.cord = function(object, nsim=1, seed=NULL, 
-  newdata=object$obj$data, reshape2matrix=TRUE) {
+  newdata=object$obj$data, reshape2matrix=TRUE, coeffs=coef(object$obj)) {
   
   # code chunk from simulate.lm to select seed
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
@@ -41,38 +43,32 @@ simulate.cord = function(object, nsim=1, seed=NULL,
     on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
   }
 
-  prs = predict_responses(object, newdata)
+  prs = predict_responses(object, newdata, coeffs)
   newY = simulate_newY(object, nsim, prs)
   newY = reshape_newY(object, nsim, reshape2matrix, newY)
 
   return (newY)
 }
 
-predict_responses = function(object, newdata) {
-  if (object$obj$call[[1]] == "manyglm") {
-    design.matrix = model.matrix(object$obj$formula[-2], data=newdata)
-    coeffs = coef(object$obj)
-    if (ncol(design.matrix) != nrow(coeffs)) {
-      prs = suppressWarnings(
-        predict.manyglm(object$obj, type = "response", newdata = newdata)
-      ) # warning for family=poisson suppressed
-    } else {
-      if (object$obj$family == "negative.binomial") {
-        prs = MASS::negative.binomial(theta=1)$linkinv(design.matrix%*%coeffs)
-      } else if (object$obj$family == "poisson") {
-        prs = poisson(link="log")$linkinv(design.matrix%*%coeffs)
-      } else if (object$obj$family == "binomial(link=logit)") {
-        prs = binomial(link="logit")$linkinv(design.matrix%*%coeffs)
-      } else if (object$obj$family == "binomial(link=cloglog)") {
-        prs = binomial(link="cloglog")$linkinv(design.matrix%*%coeffs)
-      } else {
-        stop("'family'", object$obj$family, "not recognized")
-      }
-    }
-  } else if (object$obj$call[[1]] == "manylm") {
-    prs = predict.manylm(object$obj, type = "response", newdata = newdata)
+predict_responses = function(object, newdata, coeffs) {
+  if (all(coeffs == coef(object$obj))) {
+    prs = suppressWarnings(
+      predict(object$obj, type = "response", newdata = newdata)
+    ) # warning for family=poisson suppressed
   } else {
-    stop("'class'", class(object$obj), "not supported")
+    design.matrix = model.matrix(object$obj$formula[-2], data=newdata)
+
+    if (object$obj$family == "negative.binomial") {
+      prs = MASS::negative.binomial(theta=1)$linkinv(design.matrix%*%coeffs)
+    } else if (object$obj$family == "poisson") {
+      prs = poisson(link="log")$linkinv(design.matrix%*%coeffs)
+    } else if (object$obj$family == "binomial(link=logit)") {
+      prs = binomial(link="logit")$linkinv(design.matrix%*%coeffs)
+    } else if (object$obj$family == "binomial(link=cloglog)") {
+      prs = binomial(link="cloglog")$linkinv(design.matrix%*%coeffs)
+    } else {
+      stop("'family'", object$obj$family, "not recognized")
+    }
   }
  
   return (prs)
@@ -101,15 +97,15 @@ simulate_newY = function(object, nsim, prs) {
           stop("'family'", object$obj$family, "not recognized")
         }
       }
-    }
-
-    if (object$obj$call[[1]] == "manylm") {
+    } else if (object$obj$call[[1]] == "manylm") {
       df.residual = object$obj$df.residual
       sigma2 = apply((object$obj$y - object$obj$fitted)^2, 2, sum)/df.residual
       for (iVar in 1:nVar) {
         newY[,iVar,k] = sim[,iVar] * sqrt(sigma2[iVar])
       }
       newY[,,k] = newY[,,k] + prs
+    } else {
+      stop("'class'", class(object$obj), "not supported")
     }
   }
 
