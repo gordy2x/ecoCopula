@@ -11,7 +11,7 @@ fortran: true
 matrix:
   include:
     - os: linux
-      dist: trusty
+ #     dist: trusty
       sudo: required
             
 
