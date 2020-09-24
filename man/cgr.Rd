@@ -4,7 +4,14 @@
 \alias{cgr}
 \title{Fitting Gaussian copula graphical lasso to co-occurence data}
 \usage{
-cgr(obj, lambda = NULL, n.lambda = 100, n.samp = 500, method = "BIC", seed = 1)
+cgr(
+  obj,
+  lambda = NULL,
+  n.lambda = 100,
+  n.samp = 500,
+  method = "BIC",
+  seed = NULL
+)
 }
 \arguments{
 \item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 
@@ -61,7 +68,7 @@ Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for cova
 data(spider)
 abund <- mvabund(spider$abund)
 X <- spider$x
-spider_mod=manyglm(abund~X)
+spider_mod=manyglm(abund~1)
 spid_graph=cgr(spider_mod)
 plot(spid_graph,pad=1)
 }

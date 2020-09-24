@@ -22,7 +22,7 @@
 #' X <- spider$x
 #' spider_mod=manyglm(abund~1)
 #' spid_graph=cgr(spider_mod)
-#' plot(spid_graph)
+#' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), vertex.col = "black",vary.edge.lwd=TRUE)
 
 plot.cgr = function(x, P = NULL, vary.edge.lwd=FALSE, edge.col = c("light blue","pink"),
                     label = colnames(x$obj$fitted.values), vertex.col = "blue",  

@@ -33,7 +33,7 @@
 #' data(spider)
 #' abund <- mvabund(spider$abund)
 #' X <- spider$x
-#' spider_mod=manyglm(abund~X)
+#' spider_mod=manyglm(abund~1)
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph,pad=1)
 #' @import mvabund

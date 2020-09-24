@@ -2,20 +2,22 @@
 % Please edit documentation in R/plot_cord.R
 \name{plot.cord}
 \alias{plot.cord}
-\title{Plots an ordination plot of latent variables and their corresponding coefficients (biplot).}
+\title{Plots an ordination of latent variables and their corresponding coefficients (biplot).}
 \usage{
 \method{plot}{cord}(
-  obj,
+  x,
   biplot = FALSE,
   site.col = "black",
   sp.col = "blue",
-  alpha = 0.9,
+  alpha = 0.7,
   arrow = TRUE,
+  site.text = FALSE,
+  labels = dimnames(x$obj$fitted.values),
   ...
 )
 }
 \arguments{
-\item{obj}{is a cord object, e.g. from output of \code{cord}}
+\item{x}{is a cord object, e.g. from output of \code{cord}}
 
 \item{biplot}{\code{TRUE} if both latent variables and their coefficients are plotted, \code{FALSE} if only latent variables}
 
@@ -23,9 +25,13 @@
 
 \item{sp.col}{species name colour (default is blue), vector of length equal to the number of sites (if arrow=TRUE)}
 
-\item{alpha}{scaling factor for ratio of scores to loadings (default is 0.9)}
+\item{alpha}{scaling factor for ratio of scores to loadings (default is 0.7)}
 
 \item{arrow}{should arrows be plotted for species loadings (default is TRUE)}
+
+\item{site.text}{should sites be labeled by rown names of data (default is FALSE, points are drawn)}
+
+\item{labels}{the labels for sites and species (for biplots only) (default is data labels)}
 
 \item{...}{other parameters to be passed through to plotting functions.}
 }
@@ -33,7 +39,7 @@
 an ordination plot.
 }
 \description{
-Plots an ordination plot of latent variables and their corresponding coefficients (biplot).
+Plots an ordination of latent variables and their corresponding coefficients (biplot).
 }
 \examples{
 data(spider)
@@ -43,5 +49,5 @@ spider_mod=manyglm(abund~1)
 spid_lv=cord(spider_mod)
 #colour sites accoring to second column of x (bare sand)
 cols=ifelse(spider$x[,2]>0,"black","red")
-plot(spid_lv,biplot = TRUE,site.col=cols)
+plot(spid_lv,biplot = FALSE,site.col=cols, site.text = TRUE)
 }

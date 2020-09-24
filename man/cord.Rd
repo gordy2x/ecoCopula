@@ -4,18 +4,18 @@
 \alias{cord}
 \title{Model based ordination with Gaussian copulas}
 \usage{
-cord(obj, nlv = 2, n.samp = 500, seed = 1)
+cord(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL)
 }
 \arguments{
-\item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 
-or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}}}
-
 \item{nlv}{number of latent variables (default = 2, for plotting on a scatterplot)}
 
 \item{n.samp}{integer (default = 500), number of sets residuals used for importance sampling 
 (optional, see detail)}
 
 \item{seed}{integer (default = 1), seed for random number generation (optional, see detail)}
+
+\item{obj}{object of either class \code{\link[mvabund]{manyglm}}, 
+or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}}}
 }
 \value{
 \code{loadings} latent factor loadings
