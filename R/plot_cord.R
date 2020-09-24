@@ -30,9 +30,9 @@ plot.cord <- function(obj, biplot = FALSE,site.col="black",sp.col="blue",alpha=0
     #species labels from the original data
   
     if(any(class(obj$obj) == "manyany")){
-      labs <- names(obj$obj$params)
+      labs <- names(obj$obj$params)              # make this an argument
     }else{
-      labs <- colnames(obj$obj$data$abund)
+      labs <- colnames(obj$obj$data$abund)     #maybe $fitted_values
     }
     
     #extract scores and loadings
@@ -43,16 +43,18 @@ plot.cord <- function(obj, biplot = FALSE,site.col="black",sp.col="blue",alpha=0
     alpha_plot=sqrt(max(apply(scores^2,1,max)))/sqrt(max(apply(loadings^2,1,max)))*alpha
     
     #plot graph
-    plot(scores,pch=16,ylab="Latent variable 2",
+    plot(scores,pch=16,ylab="Latent variable 2",#why pch?
          xlab="Latent variable 1", type='n',...)
     abline(h=0,col="gray")
     abline(v=0,col="gray")
-    text(scores,label=1:nrow(scores),col=site.col)
+    
+    text(scores,label=1:nrow(scores),col=site.col)  # make labels maybe an argument
     if(biplot){
       loadings=loadings*alpha_plot
       if(arrow){
         arrows(0,0,loadings[,1],loadings[,2],length=0,col="dark gray")
       }
+      #points line?
       text(loadings[,1],loadings[,2],labels = labs,col=sp.col,cex = 0.8)
     }
     
