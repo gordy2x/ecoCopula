@@ -76,7 +76,7 @@ full.graph.many <- function(manyglm.obj, lambdas, res) {
     S.list = res$S.list
     res = res$res
     P = dim(S.list[[1]])[1]
-    N = dim(manyglm.obj$fitted.values)[1]
+    N = dim(manyglm.obj$fitted)[1]
     
     Th.out = Sig.out = list()
     n.lam = length(lambdas)

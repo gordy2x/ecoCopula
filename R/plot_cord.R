@@ -23,7 +23,7 @@
 
 plot.cord <- function(x, biplot = FALSE,site.col="black",sp.col="blue",
                       alpha=0.7,arrow=TRUE, site.text=FALSE,
-                      labels=dimnames(x$obj$fitted.values),...) {
+                      labels=dimnames(x$obj$fitted),...) {
     
     if(dim(x$loadings)[2]==1){
       stop("this function does not plot a single factor")

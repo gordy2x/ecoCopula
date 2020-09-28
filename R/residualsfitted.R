@@ -22,24 +22,21 @@
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @export 
 #' @examples
-#' library(tidyverse)
 #' data(spider)
-#' data <- spider$x %>% 
-#'    as.data.frame
-#' y <- spider$abun
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
 #'
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
-#'fit0 <- stackedsdm(y, formula_X = ~. -bare.sand, data = data, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
 #' fitted(fit0)
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
-#' y[,1:3] <- (y[,1:3]>0)*1 # First three columns for presence absence
-#' y[,ncol(y)] <- y[,ncol(y)] + 1 # Last column for zero truncated NB
-#' myfamily <- rep(c("binomial","poisson","negative.binomial","tweedie"), each = 3)
-#' myfamily[ncol(y)] <- "ztnegative.binomial"
-#' fit0 <- stackedsdm(y, formula_X = ~. -bare.sand, data = data, family = myfamily)
+#' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
+#' myfamily <- c(rep(c("binomial"), 3),
+#'               rep(c("negative.binomial"), (ncol(abund)-3)))
+#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
 #' fitted(fit0)
 fitted.stackedsdm <- function(object) {
      return(object$fitted)
@@ -58,24 +55,21 @@ fitted.stackedsdm <- function(object) {
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @export 
 #' @examples
-#' library(tidyverse)
 #' data(spider)
-#' data <- spider$x %>% 
-#'    as.data.frame
-#' y <- spider$abun
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
 #'
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
-#'fit0 <- stackedsdm(y, formula_X = ~. -bare.sand, data = data, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
 #' residuals(fit0)
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
-#' y[,1:3] <- (y[,1:3]>0)*1 # First three columns for presence absence
-#' y[,ncol(y)] <- y[,ncol(y)] + 1 # Last column for zero truncated NB
-#' myfamily <- rep(c("binomial","poisson","negative.binomial","tweedie"), each = 3)
-#' myfamily[ncol(y)] <- "ztnegative.binomial"
-#' fit0 <- stackedsdm(y, formula_X = ~. -bare.sand, data = data, family = myfamily)
+#' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
+#' myfamily <- c(rep(c("binomial"), 3),
+#'               rep(c("negative.binomial"), (ncol(abund)-3)))
+#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
 #' residuals(fit0)
 residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL) {
      type <- match.arg(type, choices = c("response", "dunnsmyth", "PIT"))

@@ -27,26 +27,27 @@
 #' @import ordinal 
 #' @import compiler
 #' @import doParallel 
+#' @import foreach
 #' @export 
 #' @examples
-#' library(tidyverse)
 #' data(spider)
-#' data <- spider$x %>% 
-#'    as.data.frame
-#' y <- spider$abun
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
 #'
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
-#'fit0 <- stackedsdm(y, formula_X = ~. -bare.sand, data = data, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
+#' # Fit models including all covariates are linear terms, but exclude for bare sand
+#'fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
-#' y[,1:3] <- (y[,1:3]>0)*1 # First three columns for presence absence
-#' y[,ncol(y)] <- y[,ncol(y)] + 1 # Last column for zero truncated NB
-#' myfamily <- rep(c("binomial","poisson","negative.binomial","tweedie"), each = 3)
-#' myfamily[ncol(y)] <- "ztnegative.binomial"
-#' fit0 <- stackedsdm(y, formula_X = ~. -bare.sand, data = data, family = myfamily)
-stackedsdm <- function(y, formula_X, data, family, trial_size = 1, do_parallel = TRUE, ncores = NULL, trace = FALSE) {
+#' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
+#' myfamily <- c(rep(c("binomial"), 3),
+#'               rep(c("negative.binomial"), (ncol(abund)-3)))
+#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
+stackedsdm <- function(y, formula_X, data, family="negative.binomial", 
+                       trial_size = 1, do_parallel = FALSE, 
+                       ncores = NULL, trace = FALSE) {
      y <- as.matrix(y)
      if(is.null(colnames(y)))
           colnames(y) <- paste0("resp", 1:ncol(y))
@@ -65,7 +66,7 @@ stackedsdm <- function(y, formula_X, data, family, trial_size = 1, do_parallel =
           
      if(do_parallel) {
           if(is.null(ncores))
-               registerDoParallel(cores = detectCores()-2)
+               registerDoParallel(cores = parallel::detectCores()-2)
           if(!is.null(ncores))
                registerDoParallel(cores = ncores)
           }
@@ -158,7 +159,8 @@ stackedsdm <- function(y, formula_X, data, family, trial_size = 1, do_parallel =
      ##-----------------
      out_allfits <- list(call = match.call(), fits = all_fits, y = y, formula_X = formula_X, data = data, family = family, trial_size = trial_size)
      out_allfits$linear_predictor <- sapply(all_fits, function(x) x$fit$linear)
-     out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))     
+     out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))
+     colnames(out_allfits$fitted)=colnames(y)
      class(out_allfits) <- "stackedsdm"
      
      rm(all_fits)

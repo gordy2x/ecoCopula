@@ -25,7 +25,7 @@
 #' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), vertex.col = "black",vary.edge.lwd=TRUE)
 
 plot.cgr = function(x, P = NULL, vary.edge.lwd=FALSE, edge.col = c("light blue","pink"),
-                    label = colnames(x$obj$fitted.values), vertex.col = "blue",  
+                    label = colnames(x$obj$fitted), vertex.col = "blue",  
                     label.cex = 0.8, edge.lwd = ifelse(vary.edge.lwd,10,4), edge.lty=c(1,1), ...) {
     
     #Partial correlations
