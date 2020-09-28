@@ -12,7 +12,7 @@
   alpha = 0.7,
   arrow = TRUE,
   site.text = FALSE,
-  labels = dimnames(x$obj$fitted.values),
+  labels = dimnames(x$obj$fitted),
   ...
 )
 }
@@ -50,4 +50,17 @@ spid_lv=cord(spider_mod)
 #colour sites accoring to second column of x (bare sand)
 cols=ifelse(spider$x[,2]>0,"black","red")
 plot(spid_lv,biplot = FALSE,site.col=cols, site.text = TRUE)
+
+\dontrun{
+library(ggplot2)
+library(RColorBrewer)
+alpha= 2.5
+site_res <- data.frame(spid_lv$scores,X)
+sp_res <- data.frame(ord_cord$loadings)
+ggplot()+
+ geom_point(aes(x=Factor1,y=Factor2,color = reflection ),site_res)+
+ geom_text(aes(x = Factor1*alpha, y = Factor2*alpha,label = species),data=sp_res)+
+ scale_color_gradientn(colours = brewer.pal(n = 10, name = "PuOr"))+
+ theme_classic()
+}
 }
