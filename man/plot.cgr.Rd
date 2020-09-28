@@ -9,7 +9,7 @@
   P = NULL,
   vary.edge.lwd = FALSE,
   edge.col = c("light blue", "pink"),
-  label = colnames(x$obj$fitted.values),
+  label = colnames(x$obj$fitted),
   vertex.col = "blue",
   label.cex = 0.8,
   edge.lwd = ifelse(vary.edge.lwd, 10, 4),

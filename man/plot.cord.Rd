@@ -12,7 +12,7 @@
   alpha = 0.7,
   arrow = TRUE,
   site.text = FALSE,
-  labels = dimnames(x$obj$fitted.values),
+  labels = dimnames(x$obj$fitted),
   ...
 )
 }
