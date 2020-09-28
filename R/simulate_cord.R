@@ -56,11 +56,14 @@ reshape_newdata = function(object, nsim, newdata) {
       if (ncol(newdata) > 1) {
         newdata = do.call("rbind", replicate(nsim, newdata, simplify = FALSE))
       } else {
+        name = colnames(newdata)
+        colnames(newdata) = "V1"
         newdata = data.frame(rep(newdata, nsim))
 
         if (ncol(newdata) > 1) {
-          newdata = reshape(newdata, direction = "long", varying=1:ncol(newdata))
+          newdata = reshape(newdata, direction = "long", varying=1:ncol(newdata))["V1"]
         }
+        colnames(newdata) = name
       }
     }
   }
