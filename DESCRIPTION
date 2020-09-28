@@ -8,7 +8,7 @@ Description: Creates 'graphs' of species associations (interactions) from
     models. Also creates and plots ordination biplots using gaussian copula 
     factor analytic models. 
 Depends: R (>= 3.3.0), mvabund
-Imports: glasso, plyr, sna, MASS, igraph	
+Imports: glasso, plyr, sna, MASS, igraph, betareg
 License: LGPL (>= 2.1)
 Encoding: UTF-8
 LazyData: true
