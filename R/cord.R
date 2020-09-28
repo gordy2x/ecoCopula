@@ -67,7 +67,7 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     S.list = res$S.list
     res = res$res
     P = dim(S.list[[1]])[1]
-    N = dim(manyglm.obj$fitted.values)[1]
+    N = dim(manyglm.obj$fitted)[1]
     A = factor_opt(nlv, S.list, full = TRUE, quick = FALSE, N = N)
     
     #extract elements

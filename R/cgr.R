@@ -68,8 +68,8 @@ cgr <- function(obj, lambda = NULL, n.lambda = 100,
     if (any(lambda < 0)) 
         stop("lambda must be non negative")
     
-    if (!class(obj)[1] %in% c("manyany", "manyglm","manylm")) 
-        stop("please supply an manyglm, manylm, or manyany object")
+    if (!class(obj)[1] %in% c("manyany", "manyglm","manylm","stackedsdm")) 
+        stop("please supply an manyglm, manylm, manyany or stackedsdm object")
     
     if (class(obj)[1] == "manyany" & class(obj)[2] != "clm")
         warning("cgr function is only tested on manyany with clm or tweedie")
