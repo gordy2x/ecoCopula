@@ -1,16 +1,11 @@
 #'Simulates new data from a given cord object
 #'
 #' @param object is a cord object, e.g. from output of \code{cord}
-#' @param nsim Number of simulations, defaults to 1.
+#' @param nsim Number of simulations, defaults to 1. If nsim > 1, the simulated data will be
+#' appended.
 #' @param seed Random number seed, defaults to a random seed number.
 #' @param newdata A data frame in which to look for X covariates with which to simulate.
 #' Defaults to the X covariates in the fitted model.
-#' @param reshape2matrix logical. Returns a matrix of simulated data if TRUE or nsim == 1.
-#' If TRUE and nsim > 1, the simulated data will be appended and returned as a matrix.
-#' Returns a 3-d array of simulated data if FALSE and nsim > 1. Each simulation is returned
-#' along the third dimension. Defaults to TRUE.
-#' @param coeffs Coefficient matrix for a `manyglm` object that characterises the size of effects
-#' to be simulated. Defaults to the coefficient matrix from the object `coef(object$obj)`.
 #' @export
 #' @examples
 #' data(spider)
@@ -28,8 +23,7 @@
 #' simulate(spid_lv_X, nsim=2, newdata = Xnew)
 
 
-simulate.cord = function(object, nsim=1, seed=NULL, 
-  newdata=object$obj$data, reshape2matrix=TRUE, coeffs=coef(object$obj)) {
+simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data) {
   
   # code chunk from simulate.lm to select seed
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
@@ -43,87 +37,70 @@ simulate.cord = function(object, nsim=1, seed=NULL,
     on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
   }
 
-  prs = predict_responses(object, newdata, coeffs)
-  newY = simulate_newY(object, nsim, prs)
-  newY = reshape_newY(object, nsim, reshape2matrix, newY)
+  newdata = reshape_newdata(object, nsim, newdata)
+  prs = suppressWarnings(
+      predict(object$obj, type = "response", newdata = newdata)
+  ) # warning for family=poisson suppressed
+  newY = simulate_newY(object, prs)
 
   return (newY)
 }
 
-predict_responses = function(object, newdata, coeffs) {
-  if (all(coeffs == coef(object$obj))) {
-    prs = suppressWarnings(
-      predict(object$obj, type = "response", newdata = newdata)
-    ) # warning for family=poisson suppressed
+reshape_newdata = function(object, nsim, newdata) {
+  if (formula(object$obj)[-2] == ~1) {
+    newdata = data.frame(array(1, nrow(newdata)*nsim))
   } else {
-    design.matrix = model.matrix(object$obj$formula[-2], data=newdata)
-
-    if (object$obj$family == "negative.binomial") {
-      prs = MASS::negative.binomial(theta=1)$linkinv(design.matrix%*%coeffs)
-    } else if (object$obj$family == "poisson") {
-      prs = poisson(link="log")$linkinv(design.matrix%*%coeffs)
-    } else if (object$obj$family == "binomial(link=logit)") {
-      prs = binomial(link="logit")$linkinv(design.matrix%*%coeffs)
-    } else if (object$obj$family == "binomial(link=cloglog)") {
-      prs = binomial(link="cloglog")$linkinv(design.matrix%*%coeffs)
+    if (nsim == 1) {
+      newdata = newdata
     } else {
-      stop("'family'", object$obj$family, "not recognized")
-    }
-  }
- 
-  return (prs)
-}
+      if (ncol(newdata) > 1) {
+        newdata = do.call("rbind", replicate(nsim, newdata, simplify = FALSE))
+      } else {
+        newdata = data.frame(rep(newdata, nsim))
 
-simulate_newY = function(object, nsim, prs) {
-  nRow = nrow(prs)
-  nVar = ncol(prs)
-  newY = array(NA, c(nRow, nVar, nsim))
-
-  for (k in 1:nsim) {
-    # simulate multivariate normal random variables
-    sim = MASS::mvrnorm(nRow, mu = rep(0, times = nVar), object$sigma)
-
-    # turn simulated variables into abundances
-    if (object$obj$call[[1]] == "manyglm") {
-      for (iVar in 1:nVar) {
-        if (object$obj$family == "negative.binomial") {
-          size = object$obj$theta
-          newY[,iVar,k] = qnbinom(pnorm(sim[,iVar]), size = size[iVar], mu = prs[,iVar])
-        } else if (object$obj$family == "poisson") {
-          newY[,iVar,k] = qpois(pnorm(sim[,iVar]), lambda = prs[,iVar])
-        } else if (object$obj$call$family == "binomial") {
-          newY[,iVar,k] = qbinom(pnorm(sim[,iVar]), size = 1, prob = prs[,iVar])
-        } else {
-          stop("'family'", object$obj$family, "not recognized")
+        if (ncol(newdata) > 1) {
+          newdata = reshape(newdata, direction = "long", varying=1:ncol(newdata))
         }
       }
-    } else if (object$obj$call[[1]] == "manylm") {
-      df.residual = object$obj$df.residual
-      sigma2 = apply((object$obj$y - object$obj$fitted)^2, 2, sum)/df.residual
-      for (iVar in 1:nVar) {
-        newY[,iVar,k] = sim[,iVar] * sqrt(sigma2[iVar])
-      }
-      newY[,,k] = newY[,,k] + prs
-    } else {
-      stop("'class'", class(object$obj), "not supported")
     }
   }
 
-  return (newY)
+ return (newdata)
 }
 
-reshape_newY = function(object, nsim, reshape2matrix, newY) {
-  if (reshape2matrix == TRUE || nsim == 1) {
-    ylist = lapply(seq(dim(newY)[3]), function(k) newY[,,k])
-    ymat = matrix(NA, dim(newY)[1]*nsim, dim(newY)[2])
-    ymat = do.call("rbind", ylist)
-    out = ymat
+simulate_newY = function(object, prs) {
+  nRow = nrow(prs)
+  nVar = ncol(prs)
+  newY = matrix(NA, nRow, nVar)
+
+  # simulate multivariate normal random variables
+  sim = MASS::mvrnorm(nRow, mu = rep(0, times = nVar), object$sigma)
+
+  # turn simulated variables into abundances
+  if (object$obj$call[[1]] == "manyglm") {
+    for (iVar in 1:nVar) {
+      if (object$obj$family == "negative.binomial") {
+        size = object$obj$theta
+        newY[,iVar] = qnbinom(pnorm(sim[,iVar]), size = size[iVar], mu = prs[,iVar])
+      } else if (object$obj$family == "poisson") {
+        newY[,iVar] = qpois(pnorm(sim[,iVar]), lambda = prs[,iVar])
+      } else if (object$obj$call$family == "binomial") {
+        newY[,iVar] = qbinom(pnorm(sim[,iVar]), size = 1, prob = prs[,iVar])
+      } else {
+        stop("'family'", object$obj$family, "not recognized")
+      }
+    }
+  } else if (object$obj$call[[1]] == "manylm") {
+    df.residual = object$obj$df.residual
+    sigma2 = apply((object$obj$y - object$obj$fitted)^2, 2, sum)/df.residual
+    for (iVar in 1:nVar) {
+      newY[,iVar] = sim[,iVar] * sqrt(sigma2[iVar])
+    }
+    newY = newY + prs
+  } else {
+    stop("'class'", class(object$obj), "not supported")
   }
 
-  if (reshape2matrix == FALSE && nsim > 1) {
-    out = newY
-  }
-
-  colnames(out) = colnames(object$obj$y)
-  return (out)
+  colnames(newY) = colnames(object$obj$y)
+  return (newY)
 }
