@@ -19,17 +19,16 @@
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @import glm2
-#' @import fishMod
+#' @import mgcv
 #' @import mvabund
-#' @import countreg 
 #' @import betareg 
-#' @import tweedie 
 #' @import ordinal 
 #' @import compiler
 #' @import doParallel 
 #' @import foreach
 #' @export 
 #' @examples
+#' library(mvabund)
 #' data(spider)
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
@@ -45,7 +44,7 @@
 #' myfamily <- c(rep(c("binomial"), 3),
 #'               rep(c("negative.binomial"), (ncol(abund)-3)))
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
-stackedsdm <- function(y, formula_X, data, family="negative.binomial", 
+stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial", 
                        trial_size = 1, do_parallel = FALSE, 
                        ncores = NULL, trace = FALSE) {
      y <- as.matrix(y)
@@ -106,36 +105,36 @@ stackedsdm <- function(y, formula_X, data, family="negative.binomial",
                out_params$dispparam<- fit_init$phi
                }
           if(family[j] == "tweedie") {
-               fit_init <- tglm(formula_X, data = data.frame(resp = y[,j], data), trace = 0)
-               out_params$coefficients <- fit_init$coef[1:(length(fit_init$coef)-2)]
-               out_params$dispparam <- fit_init$coef[length(fit_init$coef)-1]
-               out_params$powerparam <- fit_init$coef[length(fit_init$coef)]
+               fit_init <- gam(formula_X, data = data.frame(resp = y[,j], data), family = tw(), method = "ML")
+               out_params$coefficients <- fit_init$coefficients
+               out_params$dispparam <- summary(fit_init)$dispersion
+               out_params$powerparam <- as.numeric(strsplit(strsplit(fit_init$family$family, "p=")[[1]][2], ")")[[1]])
                }
           if(family[j] == "beta") {
                fit_init <- betareg(formula_X, data = data.frame(resp = y[,j], X), link = "logit") 
                out_params$coefficients <- fit_init$coefficients$mean
                out_params$dispparam <- 1/fit_init$coefficients$precision
                }
-          if(family[j] == "ztpoisson") {
-               fit_init <- zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson")
-               out_params$coefficients <- fit_init$coefficients
-               }
-          if(family[j] == "ztnegative.binomial") {
-               fit_init <- zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin")
-               out_params$coefficients <- fit_init$coefficients
-               out_params$dispparam <- 1/fit_init$theta
-               }
-          if(family[j] == "zipoisson") {
-               fit_init <- zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson", link = "logit")
-               out_params$coefficients <- fit_init$coefficients$count
-               out_params$ziintercept <- fit_init$coefficients$zero
-               }
-          if(family[j] == "zinegative.binomial") {
-               fit_init <- zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin", link = "logit")
-               out_params$coefficients <- fit_init$coefficients$count
-               out_params$ziintercept <- fit_init$coefficients$zero
-               out_params$dispparam <- 1/fit_init$theta
-               }
+          # if(family[j] == "ztpoisson") {
+          #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson")
+          #      out_params$coefficients <- fit_init$coefficients
+          #      }
+          # if(family[j] == "ztnegative.binomial") {
+          #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin")
+          #      out_params$coefficients <- fit_init$coefficients
+          #      out_params$dispparam <- 1/fit_init$theta
+          #      }
+          # if(family[j] == "zipoisson") {
+          #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson", link = "logit")
+          #      out_params$coefficients <- fit_init$coefficients$count
+          #      out_params$ziintercept <- fit_init$coefficients$zero
+          #      }
+          # if(family[j] == "zinegative.binomial") {
+          #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin", link = "logit")
+          #      out_params$coefficients <- fit_init$coefficients$count
+          #      out_params$ziintercept <- fit_init$coefficients$zero
+          #      out_params$dispparam <- 1/fit_init$theta
+          #      }
           if(family[j] == "ordinal") {
                fit_init <- clm(formula_X, data = data.frame(resp = y[,j], X), link = "logit") 
                out_params$coefficients <- fit_init$beta
@@ -160,7 +159,7 @@ stackedsdm <- function(y, formula_X, data, family="negative.binomial",
      out_allfits <- list(call = match.call(), fits = all_fits, y = y, formula_X = formula_X, data = data, family = family, trial_size = trial_size)
      out_allfits$linear_predictor <- sapply(all_fits, function(x) x$fit$linear)
      out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))
-     colnames(out_allfits$fitted)=colnames(y)
+     dimnames(out_allfits$fitted)=dimnames(y)
      class(out_allfits) <- "stackedsdm"
      
      rm(all_fits)
