@@ -6,8 +6,8 @@
 \usage{
 stackedsdm(
   y,
-  formula_X,
-  data,
+  formula_X = ~1,
+  data = NULL,
   family = "negative.binomial",
   trial_size = 1,
   do_parallel = FALSE,
@@ -53,6 +53,7 @@ Francis K.C. Hui <francis.hui@anu.edu.au>.
 }
 
 \examples{
+library(mvabund)
 data(spider)
 X <- as.data.frame(spider$x)
 abund <- spider$abund

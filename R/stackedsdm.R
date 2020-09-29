@@ -29,6 +29,7 @@
 #' @import foreach
 #' @export 
 #' @examples
+#' library(mvabund)
 #' data(spider)
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
@@ -44,7 +45,7 @@
 #' myfamily <- c(rep(c("binomial"), 3),
 #'               rep(c("negative.binomial"), (ncol(abund)-3)))
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
-stackedsdm <- function(y, formula_X, data, family="negative.binomial", 
+stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial", 
                        trial_size = 1, do_parallel = FALSE, 
                        ncores = NULL, trace = FALSE) {
      y <- as.matrix(y)
@@ -159,7 +160,7 @@ stackedsdm <- function(y, formula_X, data, family="negative.binomial",
      out_allfits <- list(call = match.call(), fits = all_fits, y = y, formula_X = formula_X, data = data, family = family, trial_size = trial_size)
      out_allfits$linear_predictor <- sapply(all_fits, function(x) x$fit$linear)
      out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))
-     colnames(out_allfits$fitted)=colnames(y)
+     dimnames(out_allfits$fitted)=dimnames(y)
      class(out_allfits) <- "stackedsdm"
      
      rm(all_fits)

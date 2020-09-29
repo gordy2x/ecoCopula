@@ -17,10 +17,11 @@
 #' @seealso \code{\link{gplot}}, \code{\link{cgr}}
 #' @export
 #' @examples
+#' library(mvabund)
 #' data(spider)
-#' abund <- mvabund(spider$abund)
-#' X <- spider$x
-#' spider_mod=manyglm(abund~1)
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), 
 #'                  vertex.col = "black",vary.edge.lwd=TRUE)

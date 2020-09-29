@@ -12,10 +12,11 @@
 #' @return an ordination plot.
 #' @export
 #' @examples
+#' library(mvabund)
 #' data(spider)
-#' abund <- mvabund(spider$abund)
-#' X <- spider$x
-#' spider_mod=manyglm(abund~1)
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_lv=cord(spider_mod)
 #' #colour sites accoring to second column of x (bare sand)
 #' cols=ifelse(spider$x[,2]>0,"black","red")

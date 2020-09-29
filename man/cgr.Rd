@@ -65,10 +65,11 @@ Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for cova
 }
 
 \examples{
+library(mvabund)
 data(spider)
-abund <- mvabund(spider$abund)
-X <- spider$x
-spider_mod=manyglm(abund~1)
+X <- as.data.frame(spider$x)
+abund <- spider$abund
+spider_mod <- stackedsdm(abund,~1, data = X) 
 spid_graph=cgr(spider_mod)
 plot(spid_graph,pad=1)
 }
