@@ -8,23 +8,9 @@ R package to find direct and indirect species associations from co-occurrence da
 
 #install.packages("devtools")
 
-Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)
+devtools::install_github("gordy2x/ecoCopula")
 
-devtools::install_github("gordy2x/ecoCopula",upgrade = "always")
-
-If you have trouble installing, please email me.
-
-### Author
-
-Gordana Popovic (g.popovic@unsw.edu.au)
-
-### Contributor
-
-Michelle Lim
-
-### License
-
-LGPL (>= 2.1)
+If you have trouble installing, please email me [g.popovic@unsw.edu.au](g.popovic@unsw.edu.au)
 
 ### Tutorial
 
