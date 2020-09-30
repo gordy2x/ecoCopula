@@ -31,7 +31,7 @@
 #'        rep(c("tweedie"), 4)
 #'        )
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
-#' predict(fit0, type = "response", se.fit = TRUE)
+#' predict(fit0, type = "response")
 predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = FALSE, na.action = na.pass) {
      num_spp <- length(object$family)
      if(is.null(newdata))

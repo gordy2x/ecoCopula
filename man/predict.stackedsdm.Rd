@@ -50,7 +50,7 @@ myfamily <- "negative.binomial"
 # Example 1: Funkier example where Species are assumed to have different distributions
 # Fit models including all covariates are linear terms, but exclude for bare sand
 fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
-predict(fit0, type = "response", se.fit = TRUE)
+predict(fit0, type = "response")
 
 # Example 2: Funkier example where Species are assumed to have different distributions
 abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
@@ -59,5 +59,5 @@ myfamily <- c(rep(c("binomial"), 3),
        rep(c("tweedie"), 4)
        )
 fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
-predict(fit0, type = "response", se.fit = TRUE)
+predict(fit0, type = "response")
 }
