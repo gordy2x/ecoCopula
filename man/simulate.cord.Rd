@@ -4,23 +4,34 @@
 \alias{simulate.cord}
 \title{Simulates new data from a given cord object}
 \usage{
-\method{simulate}{cord}(fit, nsim = 1, seed = NULL)
+\method{simulate}{cord}(object, nsim = 1, seed = NULL, newdata = object$obj$data)
 }
 \arguments{
-\item{nsim}{number of simulations, defaults to 1}
+\item{object}{is a cord object, e.g. from output of \code{cord}}
 
-\item{seed}{random number seed}
+\item{nsim}{Number of simulations, defaults to 1. If nsim > 1, the simulated data will be
+appended.}
 
-\item{obj}{is a cord object, e.g. from output of \code{cord}}
+\item{seed}{Random number seed, defaults to a random seed number.}
+
+\item{newdata}{A data frame in which to look for X covariates with which to simulate.
+Defaults to the X covariates in the fitted model.}
 }
 \description{
 Simulates new data from a given cord object
 }
 \examples{
 data(spider)
-abund <- mvabund(spider$abund)
-X <- spider$x
-spider_mod=manyglm(abund~1)
-spid_lv=cord(spider_mod)
+abund = mvabund(spider$abund)
+X = data.frame(spider$x)
+
+spider_mod = manyglm(abund~1)
+spid_lv = cord(spider_mod)
 simulate(spid_lv)
+
+spider_mod_X = manyglm(abund ~ soil.dry + bare.sand, data=X)
+spid_lv_X = cord(spider_mod_X)
+Xnew = X[1:10,]
+simulate(spid_lv_X, newdata = Xnew)
+simulate(spid_lv_X, nsim=2, newdata = Xnew)
 }
