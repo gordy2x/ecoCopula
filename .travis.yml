@@ -4,10 +4,8 @@ language: R
 sudo: required
 cache: packages
 dist: bionic
-#addons:
-#  apt:
-#    packages:
-#      - libxml2-dev
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes --no-examples'
 
 addons:
   apt:
