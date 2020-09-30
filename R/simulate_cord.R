@@ -81,12 +81,12 @@ simulate_newY = function(object, prs) {
   sim = MASS::mvrnorm(nRow, mu = rep(0, times = nVar), object$sigma)
 
   # turn simulated variables into abundances
-  if (object$obj$call[[1]] == "manyglm") {
+  if (as.character(object$obj$call[[1]]) %in% c("manyglm", "stackedsdm")) {
     for (iVar in 1:nVar) {
-      if (object$obj$family == "negative.binomial") {
-        size = object$obj$theta
+      if (all(object$obj$family == "negative.binomial")) {
+        size = get_size(object)
         newY[,iVar] = qnbinom(pnorm(sim[,iVar]), size = size[iVar], mu = prs[,iVar])
-      } else if (object$obj$family == "poisson") {
+      } else if (object$obj$call$family == "poisson") {
         newY[,iVar] = qpois(pnorm(sim[,iVar]), lambda = prs[,iVar])
       } else if (object$obj$call$family == "binomial") {
         newY[,iVar] = qbinom(pnorm(sim[,iVar]), size = 1, prob = prs[,iVar])
