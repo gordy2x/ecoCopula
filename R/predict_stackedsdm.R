@@ -62,7 +62,7 @@ predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = F
      }
      if(!se.fit){
              out_preds=data.frame(out_preds)
-             dimnames(out_preds)= dimnames(object$y)  
+             colnames(out_preds)= colnames(object$y)  
      }
 
      return(out_preds)
