@@ -27,10 +27,11 @@
 #' @import mvabund
 #' @export 
 #' @examples
+#' library(mvabund)
 #' data(spider)
-#' abund <- mvabund(spider$abund)
-#' X <- spider$x
-#' spider_mod=manyglm(abund~1)
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_lv=cord(spider_mod)
 #' plot(spid_lv,biplot = TRUE)
 cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {

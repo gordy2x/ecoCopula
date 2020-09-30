@@ -17,12 +17,31 @@
 #' @seealso \code{\link{gplot}}, \code{\link{cgr}}
 #' @export
 #' @examples
+#' library(mvabund)
 #' data(spider)
-#' abund <- mvabund(spider$abund)
-#' X <- spider$x
-#' spider_mod=manyglm(abund~1)
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_graph=cgr(spider_mod)
-#' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), vertex.col = "black",vary.edge.lwd=TRUE)
+#' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), 
+#'                  vertex.col = "black",vary.edge.lwd=TRUE)
+#'                  
+#'\dontrun{
+#'library(tidyr)
+#'library(tidygraph)
+#'library(ggraph)
+#'
+#'igraph_out<-spid_graph$best_graph$igraph_out
+#'
+#'igraph_out %>% ggraph('fr') + # see ?layout_tbl_graph_igraph
+#'    geom_edge_fan0(aes( colour = partcor, width=partcor)) +
+#'    scale_edge_width(range = c(0.5, 3))+
+#'    scale_edge_color_gradient2(low="#b2182b",mid="white",high="#2166ac")+
+#'    geom_node_text(aes(label=name), repel = TRUE)+
+#'    geom_node_point(aes(size=1.3))+
+#'    theme_void() +
+#'    theme(legend.position = 'none')
+#'}
 
 plot.cgr = function(x, P = NULL, vary.edge.lwd=FALSE, edge.col = c("light blue","pink"),
                     label = colnames(x$obj$fitted), vertex.col = "blue",  

@@ -22,6 +22,7 @@
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @export 
 #' @examples
+#' library(mvabund)
 #' data(spider)
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
@@ -55,6 +56,7 @@ fitted.stackedsdm <- function(object) {
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @export 
 #' @examples
+#' library(mvabund)
 #' data(spider)
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
