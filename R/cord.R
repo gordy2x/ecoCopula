@@ -53,7 +53,7 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
         stop("n.samp must be an integer")
     
     if (length(nlv) != 1) 
-        warn("nlv must be an integer")
+        stop("nlv must be an integer")
     
     if (floor(nlv) != ceiling(nlv)) 
         stop("nlv must be an integer")
