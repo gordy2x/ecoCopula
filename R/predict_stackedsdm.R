@@ -41,7 +41,7 @@ predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = F
           type <- rep(type, num_spp)
           
      out_preds <- vector("list", num_spp)
-     names(out_preds) <- colnames(fit0$y) 
+     names(out_preds) <- colnames(object$y) 
      for(j in 1:num_spp) {
           if(object$family[j] %in% c("gaussian", "poisson", "Gamma", "binomial", "negative.binomial")) 
                type[j] <- match.arg(type[j], choices = c("response", "link"))
