@@ -19,10 +19,9 @@
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @import glm2
-#' @import fishMod
+#' @import mgcv
 #' @import mvabund
 #' @import betareg 
-#' @import tweedie 
 #' @import ordinal 
 #' @import compiler
 #' @import doParallel 
@@ -106,10 +105,10 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
                out_params$dispparam<- fit_init$phi
                }
           if(family[j] == "tweedie") {
-               fit_init <- tglm(formula_X, data = data.frame(resp = y[,j], data), trace = 0)
-               out_params$coefficients <- fit_init$coef[1:(length(fit_init$coef)-2)]
-               out_params$dispparam <- fit_init$coef[length(fit_init$coef)-1]
-               out_params$powerparam <- fit_init$coef[length(fit_init$coef)]
+               fit_init <- gam(formula_X, data = data.frame(resp = y[,j], data), family = tw(), method = "ML")
+               out_params$coefficients <- fit_init$coefficients
+               out_params$dispparam <- summary(fit_init)$dispersion
+               out_params$powerparam <- as.numeric(strsplit(strsplit(fit_init$family$family, "p=")[[1]][2], ")")[[1]])
                }
           if(family[j] == "beta") {
                fit_init <- betareg(formula_X, data = data.frame(resp = y[,j], X), link = "logit") 
