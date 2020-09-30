@@ -84,4 +84,4 @@ ztnegative.binomial <- function() {
      structure(list(family = "ztnegative.binomial", linkinv = linkinv, variance = variance, link = link), class = "family")
      }
 
-     
+  

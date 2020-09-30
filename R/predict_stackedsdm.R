@@ -1,42 +1,3 @@
-#' function() {
-#'      rm(list = ls())
-#'     library(glm2)
-#'     library(mgcv)
-#'     library(mvabund)
-#'     library(betareg)
-#'     library(ordinal)
-#'     library(compiler)
-#'     library(doParallel)     
-#'     library(foreach)
-#'     
-#'      source("stackedsdm.R")
-#'      source("predict_stackedsdm.R")
-#'      source("../R/auxfnsv0.R")
-#'      source("../R/residualsfitted.R")
-#'      #library(ecoCopula)
-#'      library(mvabund)
-#'      data(spider)
-#'      
-#'      X <- as.data.frame(spider$x)
-#'      abund <- spider$abund
-#'      # Example 1: Simple example
-#'      myfamily <- "negative.binomial"
-#'      # Example 1: Funkier example where Species are assumed to have different distributions
-#'      # Fit models including all covariates are linear terms, but exclude for bare sand
-#'      fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
-#'      predict(fit0, type = "response", se.fit = TRUE)
-#'     
-#'      # Example 2: Funkier example where Species are assumed to have different distributions
-#'      abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
-#'      myfamily <- c(rep(c("binomial"), 3),
-#'                    rep(c("negative.binomial"), 5),
-#'                     rep(c("tweedie"), 4)
-#'                     )
-#'      fit0 <- stackedsdm(abund, formula_X = ~ . - bare.sand, data = X, family = myfamily, do_parallel = TRUE)
-#'      predict(fit0, se.fit = TRUE, type = "response")
-#'     }
- 	
-
 #' Predictions from a stackedsdm object
 #'
 #' @param object An object of class \code{stackedsdm}
@@ -61,7 +22,7 @@
 #' # Example 1: Funkier example where Species are assumed to have different distributions
 #' # Fit models including all covariates are linear terms, but exclude for bare sand
 #' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
-#' predict(fit0, type = "response", se.fit = TRUE)
+#' predict(fit0, type = "response")
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
 #' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
@@ -98,8 +59,11 @@ predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = F
           if(object$family[j] == "tweedie") {
                out_preds[[j]]  <- predict(object$fits[[j]]$fit, newdata = newdata, type = type[j], se.fit = se.fit, na.action = na.action)
                }
-          }
-                    
+     }
+     if(!se.fit){
+             out_preds=data.frame(out_preds)
+             dimnames(out_preds)= dimnames(object$y)  
+     }
 
      return(out_preds)
      }

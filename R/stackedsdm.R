@@ -105,7 +105,7 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
                out_params$dispparam<- fit_init$phi
                }
           if(family[j] == "tweedie") {
-               fit_init <- gam(formula_X, data = data.frame(resp = y[,j], data), family = tw(), method = "ML")
+               fit_init <- gam(formula_X, data = data.frame(resp = y[,j], data), family = mgcv::tw(), method = "ML")
                out_params$coefficients <- fit_init$coefficients
                out_params$dispparam <- summary(fit_init)$dispersion
                out_params$powerparam <- as.numeric(strsplit(strsplit(fit_init$family$family, "p=")[[1]][2], ")")[[1]])
@@ -168,3 +168,5 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
      }
      
      
+#' @export 
+mgcv::ldTweedie
