@@ -4,7 +4,7 @@
 \alias{fitted.stackedsdm}
 \title{Fitted values from a stackedsdm object}
 \usage{
-fitted.stackedsdm(object)
+\method{fitted}{stackedsdm}(object)
 }
 \arguments{
 \item{object}{An object of class \code{stackedsdm}}
