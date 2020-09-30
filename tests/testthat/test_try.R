@@ -1,6 +1,7 @@
 context("my first test file")
 
 library(ecoCopula)
+library(mvabund)
 data(spider)
 spider.mod=manyglm(mvabund(spider$abund)~spider$x)
 
