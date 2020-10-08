@@ -21,6 +21,14 @@
 #' Xnew = X[1:10,]
 #' simulate(spid_lv_X, newdata = Xnew)
 #' simulate(spid_lv_X, nsim=2, newdata = Xnew)
+#'
+#' spider_mod_ssdm = stackedsdm(abund,~1, data = X)
+#' spid_lv_ssdm = cord(spider_mod_ssdm)
+#' simulate(spid_lv_ssdm, nsim=2)
+#'
+#' spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X)
+#' spid_lv_X_ssdm = cord(spider_mod_X_ssdm)
+#' simulate(spid_lv_X_ssdm, newdata = Xnew)
 
 
 simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data) {
@@ -37,6 +45,7 @@ simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data) {
     on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
   }
 
+  check_object_family(object)
   newdata = reshape_newdata(object, nsim, newdata)
   prs = suppressWarnings(
       predict(object$obj, type = "response", newdata = newdata)
@@ -80,12 +89,12 @@ simulate_newY = function(object, prs) {
   sim = MASS::mvrnorm(nRow, mu = rep(0, times = nVar), object$sigma)
 
   # turn simulated variables into abundances
-  if (object$obj$call[[1]] == "manyglm") {
+  if (as.character(object$obj$call[[1]]) %in% c("manyglm", "stackedsdm")) {
     for (iVar in 1:nVar) {
-      if (object$obj$family == "negative.binomial") {
-        size = object$obj$theta
+      if (all(object$obj$family == "negative.binomial")) {
+        size = get_size(object)
         newY[,iVar] = qnbinom(pnorm(sim[,iVar]), size = size[iVar], mu = prs[,iVar])
-      } else if (object$obj$family == "poisson") {
+      } else if (object$obj$call$family == "poisson") {
         newY[,iVar] = qpois(pnorm(sim[,iVar]), lambda = prs[,iVar])
       } else if (object$obj$call$family == "binomial") {
         newY[,iVar] = qbinom(pnorm(sim[,iVar]), size = 1, prob = prs[,iVar])
@@ -106,4 +115,25 @@ simulate_newY = function(object, prs) {
 
   colnames(newY) = colnames(object$obj$y)
   return (newY)
+}
+
+get_size = function(object) {
+  if (object$obj$call[[1]] == "manyglm") {
+    size = object$obj$theta
+  }
+
+  if (as.character(object$obj$call[[1]]) == "stackedsdm") {
+    fits = object$obj$fits
+    size = sapply(fits, function(x) x[['fit']][['theta']])
+  }
+
+  return (size)
+}
+
+check_object_family = function(object) {
+  if (as.character(object$obj$call[[1]]) == "stackedsdm") {
+    if (length(unique(object$obj$family)) > 1) {
+      stop("Multiple distributions not supported currently")
+    }
+  }
 }
