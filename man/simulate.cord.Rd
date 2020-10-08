@@ -34,4 +34,12 @@ spid_lv_X = cord(spider_mod_X)
 Xnew = X[1:10,]
 simulate(spid_lv_X, newdata = Xnew)
 simulate(spid_lv_X, nsim=2, newdata = Xnew)
+
+spider_mod_ssdm = stackedsdm(abund,~1, data = X)
+spid_lv_ssdm = cord(spider_mod_ssdm)
+simulate(spid_lv_ssdm, nsim=2)
+
+spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X)
+spid_lv_X_ssdm = cord(spider_mod_X_ssdm)
+simulate(spid_lv_X_ssdm, newdata = Xnew)
 }
