@@ -6,7 +6,6 @@
 #' @param seed Random number seed, defaults to a random seed number.
 #' @param newdata A data frame in which to look for X covariates with which to simulate.
 #' Defaults to the X covariates in the fitted model.
-#' @export
 #' @examples
 #' library(mvabund) #for manyglm
 #' abund = mvabund(spider$abund)
@@ -29,8 +28,8 @@
 #' spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X)
 #' spid_lv_X_ssdm = cord(spider_mod_X_ssdm)
 #' simulate(spid_lv_X_ssdm, newdata = Xnew)
-
-
+#' @importFrom stats simulate
+#' @export
 simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data) {
   
   # code chunk from simulate.lm to select seed

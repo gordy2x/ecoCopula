@@ -32,7 +32,7 @@
 #' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_lv=cord(spider_mod)
 #' plot(spid_lv,biplot = TRUE)
-cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
+cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     
     # code chunk from simulate.lm to select seed
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
@@ -60,19 +60,19 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     set.seed(seed)
     
     # simulate full set of residulas n.samp times
-    res = simulate.res.S(manyglm.obj, n.res = n.samp)
+    res = simulate.res.S(obj, n.res = n.samp)
     
     # carry out factor analysis
     S.list = res$S.list
     res = res$res
     P = dim(S.list[[1]])[1]
-    N = dim(manyglm.obj$fitted)[1]
+    N = dim(obj$fitted)[1]
     A = factor_opt(nlv, S.list, full = TRUE, quick = FALSE, N = N)
     
     #extract elements
     Th.out = A$theta
     Sig.out=A$sigma
-    colnames(Sig.out)=rownames(Sig.out)=colnames(Th.out)=rownames(Th.out)=colnames(manyglm.obj$y)
+    colnames(Sig.out)=rownames(Sig.out)=colnames(Th.out)=rownames(Th.out)=colnames(obj$y)
     
     res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
     # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
@@ -81,12 +81,12 @@ cord <- function(manyglm.obj, nlv = 2, n.samp = 500, seed = NULL) {
     BIC.out = logL = NULL
     k = P * nlv + P - nlv * (nlv - 1)/2
     logL = ll.icov.all(Th.out, S.list = S.list, n = N)
-    BIC.out = k * log(N) - 2 * logL  -sum(manyglm.obj$two.loglike)
+    BIC.out = k * log(N) - 2 * logL  -sum(obj$two.loglike)
     
     out=list( loadings = A$loadings[], scores = t(Scores), 
               sigma = Sig.out, theta=Th.out,
               BIC = BIC.out, logL = logL,
-              obj=manyglm.obj)
+              obj=obj)
     
     
     class(out) = "cord"

@@ -1,6 +1,7 @@
 #' Fitted values from a stackedsdm object
 #'
 #' @param object An object of class \code{stackedsdm}
+#' @param ... Not used
 #' @section Details:
 #' Extracts the fitted values from \code{stackedsdm} object. 
 #' @return A matrix of fitted values.
@@ -16,7 +17,8 @@
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
-#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
+#' # Fit models including all covariates are linear terms, but exclude for bare sand
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily)
 #' fitted(fit0)
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
@@ -25,6 +27,6 @@
 #'               rep(c("negative.binomial"), (ncol(abund)-3)))
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
 #' fitted(fit0)
-fitted.stackedsdm <- function(object) {
+fitted.stackedsdm <- function(object, ...) {
   return(object$fitted)
 }

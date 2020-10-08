@@ -16,7 +16,8 @@
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
-#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) # Fit models including all covariates are linear terms, but exclude for bare sand
+#' # Fit models including all covariates are linear terms, but exclude for bare sand
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
 #' residuals(fit0)
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
