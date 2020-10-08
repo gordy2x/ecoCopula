@@ -4,6 +4,7 @@ utils::globalVariables(c("cov2cor", "factanal", "weighted.mean","coef","plot",
                          "abline","text","arrows","runif","qnorm","residuals"))
 
 
+
 # low level functions
 
 simulate.res.S <- function(obj, n.res = 200) {

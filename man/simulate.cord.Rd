@@ -21,7 +21,7 @@ Defaults to the X covariates in the fitted model.}
 Simulates new data from a given cord object
 }
 \examples{
-data(spider)
+library(mvabund) #for manyglm
 abund = mvabund(spider$abund)
 X = data.frame(spider$x)
 

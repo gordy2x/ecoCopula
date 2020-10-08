@@ -28,8 +28,6 @@
 #' @import foreach
 #' @export 
 #' @examples
-#' library(mvabund)
-#' data(spider)
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
 #'

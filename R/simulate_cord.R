@@ -8,7 +8,7 @@
 #' Defaults to the X covariates in the fitted model.
 #' @export
 #' @examples
-#' data(spider)
+#' library(mvabund) #for manyglm
 #' abund = mvabund(spider$abund)
 #' X = data.frame(spider$x)
 #'

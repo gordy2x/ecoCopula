@@ -42,8 +42,6 @@ an ordination plot.
 Plots an ordination of latent variables and their corresponding coefficients (biplot).
 }
 \examples{
-library(mvabund)
-data(spider)
 X <- as.data.frame(spider$x)
 abund <- spider$abund
 spider_mod <- stackedsdm(abund,~1, data = X) 

@@ -10,20 +10,17 @@
 #' @return A list where the k-th element is the result of applying the \code{predict} method to the k-th fitted model in \code{object$fits}.
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
-#' @export 
 #' @examples
-#' library(mvabund)
-#' data(spider)
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
 #'
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
-#' # Example 1: Funkier example where Species are assumed to have different distributions
 #' # Fit models including all covariates are linear terms, but exclude for bare sand
 #' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
 #' predict(fit0, type = "response")
 #'
+#'\dontrun{
 #' # Example 2: Funkier example where Species are assumed to have different distributions
 #' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
 #' myfamily <- c(rep(c("binomial"), 3),
@@ -32,6 +29,8 @@
 #'        )
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
 #' predict(fit0, type = "response")
+#'}
+#' @export 
 predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = FALSE, na.action = na.pass) {
      num_spp <- length(object$family)
      if(is.null(newdata))
