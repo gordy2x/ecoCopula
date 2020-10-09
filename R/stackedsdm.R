@@ -135,7 +135,7 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
           #      out_params$dispparam <- 1/fit_init$theta
           #      }
           if(family[j] == "ordinal") {
-               fit_init <- clm(formula_X, data = data.frame(resp = y[,j], X), link = "logit") 
+               fit_init <- clm(formula_X, data = data.frame(resp = y[,j], data), link = "logit") 
                out_params$coefficients <- fit_init$beta
                out_params$cutoffs <- fit_init$alpha
                }
@@ -146,6 +146,7 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
      respfit_cmpfn <- compiler::cmpfun(respfit_fn)
      rm(respfit_fn)
      
+     j=NULL #need this to pass check()
      if(do_parallel)
           all_fits <- foreach(j = 1:num_spp) %dopar% respfit_cmpfn(j = j)          
      if(!do_parallel)
