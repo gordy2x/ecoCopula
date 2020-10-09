@@ -3,12 +3,15 @@
 #' @param object An object of class \code{stackedsdm};
 #' @param type Determined what type of residuals to calculate. The current options include Dunn-Smyth residuals (default; "dunnsmyth"), raw response residuals ("response") or probability integral transform residuals ("PIT");
 #' @param seed For Dunn-Smyth and PIT residuals applied to discrete responses, random jittering is added, and the seed can be used to seed to jittering.
+#' @param ... not used
 #' @section Details:
 #' Calculated the residuals from \code{stackedsdm} object. 
 #' @return A matrix of residuals
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @export 
+#' @import stats
+#' @importFrom tweedie ptweedie  
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
@@ -26,7 +29,7 @@
 #'               rep(c("negative.binomial"), (ncol(abund)-3)))
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
 #' residuals(fit0)
-residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL) {
+residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
      type <- match.arg(type, choices = c("response", "dunnsmyth", "PIT"))
      num_units <- nrow(object$y)
      num_spp <- ncol(object$y)
@@ -67,28 +70,28 @@ residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL) {
                if(object$family[j] %in% c("beta")) 
                     out[,j] <- pbeta(object$y[,j], shape1 = object$fitted[,j]/object$fits[[j]]$params$dispparam, 
                          shape2 = (1-object$fitted[,j])/object$fits[[j]]$params$dispparam)
-               if(object$family[j] %in% c("ztpoisson"))
-                    out[,j] <- runif(num_units, min = pztpois(object$y[,j]-1, mean = object$fitted), max = ptzpois(object$y[,j], mean = object$fitted))
-               if(object$family[j] %in% c("ztnegative.binomial")) {
-                    pred_untrunccount <- predict(object$fits[[j]]$fit, type = "count")
-                    out[,j] <- runif(num_units, min = pztnbinom(object$y[,j]-1, mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam), 
-                         max = pztnbinom(object$y[,j], mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam))
-                    rm(pred_untrunccount)
-                    }
-               if(object$family[j] %in% c("zipoisson")) {
-                    pred_untrunccount <- predict(object$fits[[j]]$fit, type = "count")
-                    pred_zeroinfl <- predict(object$fits[[j]]$fit, type = "zero")
-                    out[,j] <- runif(num_units, min = pzipois(object$y[,j]-1, lambda = pred_untrunccount, pi = pred_zeroinfl), 
-                         max = pzipois(object$y[,j], lambda = pred_untrunccount, pi = pred_zeroinfl))
-                    rm(pred_untrunccount, pred_zeroinfl)
-                    }
-               if(object$family[j] %in% c("zinegative.binomial")) {
-                    pred_untrunccount <- predict(object$fits[[j]]$fit, type = "count")
-                    pred_zeroinfl <- predict(object$fits[[j]]$fit, type = "zero")
-                    out[,j] <- runif(num_units, min = pzinbinom(object$y[,j]-1, mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam, pi = pred_zeroinfl), 
-                         max = pzinbinom(object$y[,j]-1, mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam, pi = pred_zeroinfl))
-                    rm(pred_untrunccount, pred_zeroinfl)
-                    }
+               # if(object$family[j] %in% c("ztpoisson"))
+               #      out[,j] <- runif(num_units, min = pztpois(object$y[,j]-1, mean = object$fitted), max = ptzpois(object$y[,j], mean = object$fitted))
+               # if(object$family[j] %in% c("ztnegative.binomial")) {
+               #      pred_untrunccount <- predict(object$fits[[j]]$fit, type = "count")
+               #      out[,j] <- runif(num_units, min = pztnbinom(object$y[,j]-1, mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam), 
+               #           max = pztnbinom(object$y[,j], mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam))
+               #      rm(pred_untrunccount)
+               #      }
+               # if(object$family[j] %in% c("zipoisson")) {
+               #      pred_untrunccount <- predict(object$fits[[j]]$fit, type = "count")
+               #      pred_zeroinfl <- predict(object$fits[[j]]$fit, type = "zero")
+               #      out[,j] <- runif(num_units, min = pzipois(object$y[,j]-1, lambda = pred_untrunccount, pi = pred_zeroinfl), 
+               #           max = pzipois(object$y[,j], lambda = pred_untrunccount, pi = pred_zeroinfl))
+               #      rm(pred_untrunccount, pred_zeroinfl)
+               #      }
+               # if(object$family[j] %in% c("zinegative.binomial")) {
+               #      pred_untrunccount <- predict(object$fits[[j]]$fit, type = "count")
+               #      pred_zeroinfl <- predict(object$fits[[j]]$fit, type = "zero")
+               #      out[,j] <- runif(num_units, min = pzinbinom(object$y[,j]-1, mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam, pi = pred_zeroinfl), 
+               #           max = pzinbinom(object$y[,j]-1, mu = pred_untrunccount, size = 1/object$fits[[j]]$params$dispparam, pi = pred_zeroinfl))
+               #      rm(pred_untrunccount, pred_zeroinfl)
+               #      }
                if(object$family[j] %in% c("ordinal")) {
                     pred_cumprobs <- predict(object$fits[[j]]$fit, type = "cum.prob")
                     out[,j] <- runif(num_units, min = pred_cumprobs$cprob2, max = pred_cumprobs$cprob1)

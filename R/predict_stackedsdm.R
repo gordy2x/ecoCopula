@@ -5,11 +5,13 @@
 #' @param type The type of prediction required.  This can be supplied as either a single character string, when is applied to all species, or a vector of character strings of the same length as \code{ncol(object$y)} specifying the type of predictions desired for each species. The exact type of prediction allowed depends precisely on the distribution, but for many there is at least `"link"' which is on the scale of the linear predictors, and ‘"response"’ which is on the scale of the response variable. The values of this argument can be abbreviated.
 #' @param se.fit Logical switch indicating if standard errors are required.
 #' @param na.action Function determining what should be done with missing values in '"newdata"'. The default is to predict \code{NA}..
+#' @param ... not used
 #' @section Details:
 #'  This function simply applies a for loop, cycling through each fitted model from the \code{stackedsdm} object and then attempting to construct the relevant predictions by applying the relevant \code{predict} method. Please keep in mind no formatting is done to the predictions.
 #' @return A list where the k-th element is the result of applying the \code{predict} method to the k-th fitted model in \code{object$fits}.
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
+#' @importFrom stats na.pass
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
@@ -31,7 +33,7 @@
 #' predict(fit0, type = "response")
 #'}
 #' @export 
-predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = FALSE, na.action = na.pass) {
+predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = FALSE, na.action = na.pass, ...) {
      num_spp <- length(object$family)
      if(is.null(newdata))
           newdata <- object$data

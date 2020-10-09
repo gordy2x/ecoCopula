@@ -4,7 +4,7 @@
 \alias{residuals.stackedsdm}
 \title{Calculate residuals from a stackedsdm object}
 \usage{
-\method{residuals}{stackedsdm}(object, type = "dunnsmyth", seed = NULL)
+\method{residuals}{stackedsdm}(object, type = "dunnsmyth", seed = NULL, ...)
 }
 \arguments{
 \item{object}{An object of class \code{stackedsdm};}
@@ -12,6 +12,8 @@
 \item{type}{Determined what type of residuals to calculate. The current options include Dunn-Smyth residuals (default; "dunnsmyth"), raw response residuals ("response") or probability integral transform residuals ("PIT");}
 
 \item{seed}{For Dunn-Smyth and PIT residuals applied to discrete responses, random jittering is added, and the seed can be used to seed to jittering.}
+
+\item{...}{not used}
 }
 \value{
 A matrix of residuals

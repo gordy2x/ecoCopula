@@ -5,6 +5,7 @@
 #' appended.
 #' @param seed Random number seed, defaults to a random seed number.
 #' @param newdata A data frame in which to look for X covariates with which to simulate.
+#' @param ... not used
 #' Defaults to the X covariates in the fitted model.
 #' @examples
 #' library(mvabund) #for manyglm
@@ -30,7 +31,7 @@
 #' simulate(spid_lv_X_ssdm, newdata = Xnew)
 #' @importFrom stats simulate
 #' @export
-simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data) {
+simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data, ...) {
   
   # code chunk from simulate.lm to select seed
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 

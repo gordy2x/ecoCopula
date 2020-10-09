@@ -21,11 +21,12 @@
 #' @import glm2
 #' @import mgcv
 #' @import mvabund
-#' @import betareg 
+#' @importFrom  betareg betareg
 #' @import ordinal 
 #' @import compiler
 #' @import doParallel 
 #' @import foreach
+#' @import stats
 #' @export 
 #' @examples
 #' X <- as.data.frame(spider$x)
@@ -109,7 +110,7 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
                out_params$powerparam <- as.numeric(strsplit(strsplit(fit_init$family$family, "p=")[[1]][2], ")")[[1]])
                }
           if(family[j] == "beta") {
-               fit_init <- betareg(formula_X, data = data.frame(resp = y[,j], X), link = "logit") 
+               fit_init <- betareg(formula_X, data = data.frame(resp = y[,j], data), link = "logit") 
                out_params$coefficients <- fit_init$coefficients$mean
                out_params$dispparam <- 1/fit_init$coefficients$precision
                }

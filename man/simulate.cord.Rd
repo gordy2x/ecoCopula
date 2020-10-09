@@ -4,7 +4,7 @@
 \alias{simulate.cord}
 \title{Simulates new data from a given cord object}
 \usage{
-\method{simulate}{cord}(object, nsim = 1, seed = NULL, newdata = object$obj$data)
+\method{simulate}{cord}(object, nsim = 1, seed = NULL, newdata = object$obj$data, ...)
 }
 \arguments{
 \item{object}{is a cord object, e.g. from output of \code{cord}}
@@ -14,7 +14,9 @@ appended.}
 
 \item{seed}{Random number seed, defaults to a random seed number.}
 
-\item{newdata}{A data frame in which to look for X covariates with which to simulate.
+\item{newdata}{A data frame in which to look for X covariates with which to simulate.}
+
+\item{...}{not used
 Defaults to the X covariates in the fitted model.}
 }
 \description{

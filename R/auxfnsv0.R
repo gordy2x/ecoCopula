@@ -33,8 +33,8 @@ check_formula_X <- function(formula_X, data) {
      if(length(as.character(formula_X)) == 3)
           stop("formula_X should not have anything on the left hand side of the tilde sign `~'.")
      
-     oldform <- as.formula(terms(formula_X, data = data))
-     newform <- update.formula(oldform, resp ~ .)
+     oldform <- stats::as.formula(stats::terms(formula_X, data = data))
+     newform <- stats::update.formula(oldform, resp ~ .)
 
      return(newform)
      }
@@ -73,15 +73,15 @@ tweedielogfam <- function() {
 
      
 ## Truncated negative binomial with log-link
-ztnegative.binomial <- function() {
-     link <- "log"
-     linkinv <- function(eta, phi) {
-          return(mean_ztnbinom(mu = pmax(exp(eta), .Machine$double.eps), size = 1/phi))
-          }
-     variance <- function(mu, phi) 
-          return(var_ztnbinom(mu = mu, size = 1/phi))
-
-     structure(list(family = "ztnegative.binomial", linkinv = linkinv, variance = variance, link = link), class = "family")
-     }
-
-  
+# ztnegative.binomial <- function() {
+#      link <- "log"
+#      linkinv <- function(eta, phi) {
+#           return(mean_ztnbinom(mu = pmax(exp(eta), .Machine$double.eps), size = 1/phi))
+#           }
+#      variance <- function(mu, phi) 
+#           return(var_ztnbinom(mu = mu, size = 1/phi))
+# 
+#      structure(list(family = "ztnegative.binomial", linkinv = linkinv, variance = variance, link = link), class = "family")
+#      }
+# 
+#   

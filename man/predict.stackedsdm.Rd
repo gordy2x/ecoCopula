@@ -9,7 +9,8 @@
   newdata = NULL,
   type = "link",
   se.fit = FALSE,
-  na.action = na.pass
+  na.action = na.pass,
+  ...
 )
 }
 \arguments{
@@ -22,6 +23,8 @@
 \item{se.fit}{Logical switch indicating if standard errors are required.}
 
 \item{na.action}{Function determining what should be done with missing values in '"newdata"'. The default is to predict \code{NA}..}
+
+\item{...}{not used}
 }
 \value{
 A list where the k-th element is the result of applying the \code{predict} method to the k-th fitted model in \code{object$fits}.

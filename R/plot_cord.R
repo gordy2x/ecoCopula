@@ -59,7 +59,7 @@ plot.cord <- function(x, biplot = FALSE,site.col="black",sp.col="blue",
     if(site.text){
       text(scores,label=labels[[1]],col=site.col)
     }else{
-      points(scores,col=site.col,pch=16)
+      graphics::points(scores,col=site.col,pch=16)
     }
     if(biplot){
       loadings=loadings*alpha_plot
