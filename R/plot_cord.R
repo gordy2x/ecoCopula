@@ -10,6 +10,7 @@
 #' @param labels the labels for sites and species (for biplots only) (default is data labels)
 #' @param ...	other parameters to be passed through to plotting functions. 
 #' @return an ordination plot.
+#' @importFrom grDevices devAskNewPage
 #' @export
 #' @examples
 #' X <- as.data.frame(spider$x)
@@ -49,6 +50,11 @@ plot.cord <- function(x, biplot = FALSE,site.col="black",sp.col="blue",
   
     #calculate scaling factor
     alpha_plot=sqrt(max(apply(scores^2,1,max)))/sqrt(max(apply(loadings^2,1,max)))*alpha
+    
+    #don't ask for new plot but reset globally after
+    oask <- devAskNewPage()
+    devAskNewPage(FALSE)
+    on.exit(devAskNewPage(oask))
     
     #plot graph
     plot(scores,ylab="Latent variable 2",

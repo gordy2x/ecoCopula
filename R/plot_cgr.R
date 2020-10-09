@@ -1,5 +1,3 @@
-
-
 #' Plot graph of direct species associations.
 #'
 #' @param x is a cgr object, e.g. from output of \code{\link{cgr}}.
@@ -15,6 +13,7 @@
 #' @return a plot of species associations after accounting for the effect of all other species, positive/negative are blue/pink.
 #' The matrix of node positions (\code{P}) is returned silently.
 #' @seealso \code{\link{gplot}}, \code{\link{cgr}}
+#' @importFrom grDevices devAskNewPage
 #' @export
 #' @examples
 #' X <- as.data.frame(spider$x)
@@ -41,9 +40,11 @@
 #'    theme(legend.position = 'none')
 #'}
 
-plot.cgr = function(x, P = NULL, vary.edge.lwd=FALSE, edge.col = c("light blue","pink"),
+plot.cgr = function(x, P = NULL, 
+                    vary.edge.lwd=FALSE, edge.col = c("light blue","pink"),
                     label = colnames(x$obj$fitted), vertex.col = "blue",  
-                    label.cex = 0.8, edge.lwd = ifelse(vary.edge.lwd,10,4), edge.lty=c(1,1), ...) {
+                    label.cex = 0.8, edge.lwd = ifelse(vary.edge.lwd,10,4), edge.lty=c(1,1),
+                    ...) {
     
     #Partial correlations
     Theta = -cov2cor(x$best_graph$prec)
@@ -56,6 +57,12 @@ plot.cgr = function(x, P = NULL, vary.edge.lwd=FALSE, edge.col = c("light blue",
     diag(posneg) = 0
     posneg[posneg > 0] = edge.col[1]
     posneg[posneg < 0] = edge.col[2]
+    
+    
+    #don't ask for new plot but reset globally after
+    oask <- devAskNewPage()
+    devAskNewPage(FALSE)
+    on.exit(devAskNewPage(oask))
     
     #use algorithm to arrange graph nodes
     if (is.null(P)) {
