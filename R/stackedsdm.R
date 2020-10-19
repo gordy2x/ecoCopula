@@ -9,7 +9,7 @@
 #' @param ncores The number of cores to use if separate the species model fits are done in parallel. If \code{do_parallel = TRUE}, then it defaults to \code{detectCores() - 2}
 #' @param trace Print information. This is not actually used currently
 #' @section Details:
-#' \code{stackedsdm} behaves somewhat like the \code{manyglm} or \code{manyany} function in the package \code{\link{mvabund}}, in the sense that it fits a separate regresison to each species response i.e., column of \code{y}. The main difference is that different families can be permitted for each species, which thus allows for mixed responses types. 
+#' \code{stackedsdm} behaves somewhat like the \code{manyglm} or \code{manyany} function in the package \code{\link{mvabund}}, in the sense that it fits a separate regression to each species response i.e., column of \code{y}. The main difference is that different families can be permitted for each species, which thus allows for mixed responses types. 
 #' @return A object of class \code{stackedsdm} with the following components:
 #' \code{call} The function call;
 #' \code{fits} A list where the j-th element corresponds to the to the fitted model for species j i.e., the j-th column in \code{y};

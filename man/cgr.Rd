@@ -2,7 +2,7 @@
 % Please edit documentation in R/cgr.R
 \name{cgr}
 \alias{cgr}
-\title{Fitting Gaussian copula graphical lasso to co-occurence data}
+\title{Fitting Gaussian copula graphical lasso to co-occurrence data}
 \usage{
 cgr(
   obj,
@@ -38,13 +38,13 @@ Three objects are returned;
 }
 \description{
 \code{cgr} is used to fit a Gaussian copula graphical model to 
-multivatiate discrete data, like species co-occurence data in ecology. 
+multivariate discrete data, like species co-occurrence data in ecology. 
 This function fits the model and estimates the shrinkage parameter
 using BIC. Use \code{\link{plot.cgr}} to plot the resulting graph.
 }
 \section{Details}{
 
-\code{cgr} is used to fit a Gaussian copula graphical model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{glasso}} package for fitting Gaussian graphical models. Models are fit for a path of values of the shrinkage parameter \code{lambda} chosen so that both completely dense and sparse models are fit. The \code{lambda} value for the \code{best_graph} is chosen by BIC (default) or AIC.  The seed is controlled so that models with the same data and different predictors can be compared.
+\code{cgr} is used to fit a Gaussian copula graphical model to multivariate discrete data, such as co-occurrence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{glasso}} package for fitting Gaussian graphical models. Models are fit for a path of values of the shrinkage parameter \code{lambda} chosen so that both completely dense and sparse models are fit. The \code{lambda} value for the \code{best_graph} is chosen by BIC (default) or AIC.  The seed is controlled so that models with the same data and different predictors can be compared.
 }
 
 \section{Author(s)}{

@@ -44,7 +44,7 @@ Stacked species regression models, possibly fitted in parallel
 }
 \section{Details}{
 
-\code{stackedsdm} behaves somewhat like the \code{manyglm} or \code{manyany} function in the package \code{\link{mvabund}}, in the sense that it fits a separate regresison to each species response i.e., column of \code{y}. The main difference is that different families can be permitted for each species, which thus allows for mixed responses types.
+\code{stackedsdm} behaves somewhat like the \code{manyglm} or \code{manyany} function in the package \code{\link{mvabund}}, in the sense that it fits a separate regression to each species response i.e., column of \code{y}. The main difference is that different families can be permitted for each species, which thus allows for mixed responses types.
 }
 
 \section{Author(s)}{

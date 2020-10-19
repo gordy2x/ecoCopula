@@ -46,7 +46,7 @@ X <- as.data.frame(spider$x)
 abund <- spider$abund
 spider_mod <- stackedsdm(abund,~1, data = X) 
 spid_lv=cord(spider_mod)
-#colour sites accoring to second column of x (bare sand)
+#colour sites according to second column of x (bare sand)
 cols=ifelse(spider$x[,2]>0,"black","red")
 plot(spid_lv,biplot = FALSE,site.col=cols, site.text = TRUE)
 

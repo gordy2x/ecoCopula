@@ -8,7 +8,7 @@
 #' @param seed integer (default = 1), seed for random number generation (optional, see detail)
 
 #' @section Details:
-#' \code{cord} is used to fit a Gaussian copula factor analytic model to multivariate discrete data, such as co-occurence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{factanal}} function. The seed is controlled so that models with the same data and different predictors can be compared.  
+#' \code{cord} is used to fit a Gaussian copula factor analytic model to multivariate discrete data, such as co-occurrence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{factanal}} function. The seed is controlled so that models with the same data and different predictors can be compared.  
 #' @return
 #' \code{loadings} latent factor loadings
 #' \code{scores} latent factor scores
@@ -59,7 +59,7 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     # always same result unless specified otherwise
     set.seed(seed)
     
-    # simulate full set of residulas n.samp times
+    # simulate full set of residuals n.samp times
     res = simulate.res.S(obj, n.res = n.samp)
     
     # carry out factor analysis
@@ -96,10 +96,10 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
 
 #' IRW factanal
 #'
-#' Fits interativeley reweighted factanal for one choice of number of latent variables
+#' Fits iteratively reweighted factanal for one choice of number of latent variables
 #'
 #' @param nlv number of latent variables
-#' @param S.list list of emperical covariance matrices for sets of residuals
+#' @param S.list list of empirical covariance matrices for sets of residuals
 #' @param quick boolean, if true only one iteration is done
 #' @param nobs number of observations in the data
 #'
@@ -140,7 +140,7 @@ factor_opt = function(nlv, S.list, full = FALSE, quick = FALSE, nobs) {
         diff = eps + 1
         while ((diff > eps & count < maxit) & any(!is.na(Theta.gl[[count]]))) {
             
-            #recalcualte weights and weighted covariance
+            #recalculate weights and weighted covariance
             weights = plyr::laply(S.list, L.icov.prop, Theta = Theta.gl[[count]])
             weights = weights/sum(weights)
             count = count + 1

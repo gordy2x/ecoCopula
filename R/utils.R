@@ -27,7 +27,7 @@ simulate.res.S <- function(obj, n.res = 200) {
 
 #' Cov assuming 0 mean
 #'
-#' Emperical covariance assuming mean 0
+#' empirical covariance assuming mean 0
 #'
 #' @param Y matrix
 #'
@@ -39,10 +39,10 @@ cov0 = function(Y) {
 
 #' multiple log likelihood 
 #'
-#' Calculate log likelihood with mutiple emperical covariance matrices and one estimated precision
+#' Calculate log likelihood with multiple empirical covariance matrices and one estimated precision
 #'
 #' @param theta estimated precision
-#' @param S.list list of emperical covariance matrices for sets of residuals
+#' @param S.list list of empirical covariance matrices for sets of residuals
 #' @param nobs sample size
 #'
 #' @noRd
@@ -62,9 +62,9 @@ ll.icov.all <- function(theta, S.list, nobs) {
 
 #' single log likelihood unnormalised
 #'
-#' Calculate log likelihood (unnormalised) with emperical covariance matrix and estimated precision
+#' Calculate log likelihood (unnormalised) with empirical covariance matrix and estimated precision
 #'
-#' @param S emperical covariance matrix
+#' @param S empirical covariance matrix
 #' @param Theta estimated precision
 #'
 #' @noRd
