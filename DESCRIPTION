@@ -1,10 +1,10 @@
 Package: ecoCopula
-Title: Graphical modelling and ordination using copulas
+Title: Graphical Modelling and Ordination using Copulas
 Version: 1.0.1
 Authors@R: c(person("Gordana", "Popovic", email = "g.popovic@unsw.edu.au", role = c("aut", "cre")),
-            person("Michelle", "Lim", role = "ctb"))
+            person("Michelle", "Lim", role = "ctb"), person("Francis K.C.", "Hui", role = "ctb"))
 Description: Creates 'graphs' of species associations (interactions) from 
-    co-occurence data by fitting discrete gaussian copula graphical 
+    co-occurrence data by fitting discrete gaussian copula graphical 
     models. Also creates and plots ordination biplots using gaussian copula 
     factor analytic models. 
 Depends: R (>= 3.3.0)
@@ -19,4 +19,3 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-VignetteBuilder: knitr

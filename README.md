@@ -12,7 +12,3 @@ devtools::install_github("gordy2x/ecoCopula")
 
 If you have trouble installing, please email me [g.popovic@unsw.edu.au](mailto:g.popovic@unsw.edu.au)
 
-### Tutorial
-
-[ecoCopula tutorial](https://gordy2x.github.io/ecoCopula/vignettes/tutorial.html)
-
