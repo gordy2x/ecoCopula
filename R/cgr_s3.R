@@ -80,3 +80,59 @@ plot.cgr = function(x, P = NULL,
     #return location of nodes
     invisible(P)
 }
+
+
+#' Print function for cgr object
+#'
+#' @param x is a cgr object, e.g. from output of \code{\link{cgr}}.
+#' @param ... not used
+#' @seealso \code{\link{cgr}}
+#' @export
+#' @examples
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spid_graph=cgr(spider_mod)
+#' print(spid_graph)
+print.cgr = function (x, ...) 
+{
+    cat("\nCall:\n", paste(deparse(x$obj$call), sep = "\n", 
+                           collapse = "\n"), "\n\n", sep = "")
+   
+    Theta = -cov2cor(x$best_graph$prec)
+    diag(Theta)=0
+    cat("Pairwise associations:\n")
+    print(paste0(sum(Theta>0)," positive and ",sum(Theta<0)," negative"))
+    
+    cat("\n")
+    invisible(x)
+}
+
+#' Summary function for cgr object
+#'
+#' @param object is a cgr object, e.g. from output of \code{\link{cgr}}.
+#' @param ... not used
+#' @seealso \code{\link{cgr}}
+#' @export
+#' @examples
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spid_graph=cgr(spider_mod)
+#' summary(spid_graph)
+summary.cgr = function (object, ...) 
+{
+    cat("\nCall:\n", paste(deparse(object$obj$call), sep = "\n", 
+                           collapse = "\n"), "\n\n", sep = "")
+    
+    Theta = -cov2cor(object$best_graph$prec)
+    diag(Theta)=0
+    colnames(Theta)=substr(colnames(Theta),1,3)
+    rownames(Theta)=substr(rownames(Theta),1,3)
+    
+    cat("Pairwise associations:\n")
+    print(round(Theta,3))
+    
+    cat("\n")
+    invisible(object)
+}
