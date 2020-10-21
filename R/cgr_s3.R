@@ -17,7 +17,7 @@
 #' @export
 #' @examples
 #' X <- as.data.frame(spider$x)
-#' abund <- spider$abund
+#' abund <- spider$abund[,1:5]
 #' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), 
@@ -90,7 +90,7 @@ plot.cgr = function(x, P = NULL,
 #' @export
 #' @examples
 #' X <- as.data.frame(spider$x)
-#' abund <- spider$abund
+#' abund <- spider$abund[,1:5]
 #' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_graph=cgr(spider_mod)
 #' print(spid_graph)
@@ -116,7 +116,7 @@ print.cgr = function (x, ...)
 #' @export
 #' @examples
 #' X <- as.data.frame(spider$x)
-#' abund <- spider$abund
+#' abund <- spider$abund[,1:5]
 #' spider_mod <- stackedsdm(abund,~1, data = X) 
 #' spid_graph=cgr(spider_mod)
 #' summary(spid_graph)
