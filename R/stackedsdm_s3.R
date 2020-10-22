@@ -214,3 +214,20 @@ residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
   return(out)
 }
 
+
+#' Plot residuals of stackedsdm.
+#'
+#' @param x is a stackedsdm object.
+#' @param ... not used
+#' @export
+#' @examples
+#' X <- as.data.frame(spider$x)
+#' abund <- spider$abund
+#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' plot(spider_mod)
+plot.stackedsdm = function(x,...) {
+  scatter.smooth(residuals(x)~fitted(x),
+                 xlab = "Fitted values",
+                 ylab = "Dunn-Smyth residuals")
+  abline(h=0,col="red")
+}

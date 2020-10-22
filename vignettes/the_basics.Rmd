@@ -1,0 +1,126 @@
+---
+title: "Basic functionality of ecoCopula"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{the_basics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=5,
+  fig.height = 3.5,
+  fig.align = 'center'
+)
+```
+
+```{r setup, include = FALSE}
+options(rmarkdown.html_vignette.check_title = FALSE)
+knitr::opts_knit$set(global.par = TRUE)
+```
+
+```{r include = FALSE}
+par(mai=c(0.8,0.8,0.2,0.2))
+```
+
+
+## Overview
+
+The ecoCopula package allows you to visualise multivariate discrete data with graphical models and ordination. The package was designed primarily for multivariate abundance data in ecology, however it can be applied to any multivariate discrete data. 
+
+The two main functions are:
+
+1. Copula graphical models (`cgr`) allow you to plot a *graph* which distinguishes between direct and indirect relationships between variables (e.g species).
+2. Copula ordination (`cord`) allows you to visualise how samples (sites) and variables (species) are located along several latent variables (unobserved environmental gradient). 
+
+The ecoCopula package used model-based methods (rather than distance-based, e.g. nMDS), and works best as a visualisation tool when using other model-based methods (e.g. `mvabund`) for inference. Both `cord` and `cgr` will work on either a `stackedsdm` object (stacked species distribution model, from ecoCopula) or a `manyglm` object (from mvabund). 
+
+In this document we will look at unconstrained ordination and graphs (interactions) for some count and presence-absence data. 
+
+
+## Under the hood
+
+### Copulas for discrete data
+
+Copulas are a way to construct a multivariate distribution, and can be used as an alternative to hierarchical models (as in gllvm, HMSC) and generalised estimating equations (GEE, mvabund). Like hierarchical models, but unlike GEEs, copulas directly model covariance between variables (species). The main advantages relative to hierarchical models are in speed, with copula ordination usually being at least 10 times faster than ordination with hierarchical models. For more details about copulas see Popovic et. al. (2019) and 
+
+### Copula ordination
+
+Model based ordination methods, including Gaussian copula ordination using the `cord` function as well as `gllvm`, `boral` and `HMSC`, uses latent variables. These can be interpreted as unobserved environmental covariates. Biplots are created by plotting the scores of sites and loadings of species. By directly modelling the data, model-based methods account for both the natural variation mean-variance relationships in multivariate abundance data.  We can use standard statistical tools to  check the assumptions and perform model selection, quantify the uncertainty in the estimated correlations between species, and predict to existing and/or new sites, all of which are generally more challenging when using dissimilarity-based ordination methods (like nMDS). 
+
+### Copula graphical models
+
+Graphical models look at direct and indirect associations between variables (species). They try to answer the question: *Is the abundance of this pair of species related, after accounting for the effect of the abundances of all the other species in the data?* A simple and crude way to do this might be regressing each of the two species separately (as response) against all the other species in the data (as predictors), and then looking for any residual correlation between the pair. Graphical models do something like this, but using modern statistical techniques to improve efficiency and model the community jointly. 
+
+## Worked example - Hunting spiders
+
+The hunting `spider` dataset has counts of 12 hunting spiders at 28 sites, collected using pit traps, as well as 6 environmental covariates. 
+
+```{r}
+library(ecoCopula)
+# spider data is stored in ecoCopula
+data(spider)
+X <- as.data.frame(spider$x) # environmental covariates
+abund <- spider$abund # abundance of spiders
+pa=abund>0 # presence-absence of spiders
+```
+
+### Ordination
+
+To plot an ordination biplot for presence-absence data (`pa`), we first fit a marginal model using stackedsdm or manyglm and `family="binomial"`, then use the copula ordination function `cord` on the resulting object, and plot the output. 
+
+```{r}
+# fit marginal model
+spider_pa <- stackedsdm(pa,~1, data = X, family="binomial") #eqiv. manyglm()
+# fit copula ordination 
+spid_lv=cord(spider_pa)
+# biplot
+plot(spid_lv,biplot = TRUE)
+```
+
+To color the sites by a predictor, you can create a color variable. To check that you fit a sensible model you can plot residuals `plot(spider_pa)`
+
+```{r}
+sand<-ifelse(X$bare.sand==0,"red","blue")
+plot(spid_lv,site.col = sand)
+```
+
+For fancier graphics with `ggplot` see `?plot.cgr`.
+
+### Graphical model
+
+To plot a *graph* of the spider abundances `abund`, we again first fit a marginal model using stackedsdm or manyglm and `family="negative.binomial"` (for counts), then use the copula graph function `cgr` on the resulting object, and plot the output. 
+
+```{r}
+# fit marginal model
+spider_mod <- stackedsdm(abund,~1, data = X, family="negative.binomial") #eqiv. manyglm()
+# fit copula ordination 
+spid_gr=cgr(spider_mod)
+# biplot
+plot(spid_gr)
+```
+
+Graphs are interpreted as maps of direct and indirect associations between species. 
+
+- Species pairs that have no direct edge between them (e.g Pardmont and Trocterr) have no direct association, so any co-occurrence patterns they have are due to associations they both have with other species in the data (mediator species, e.g. Alopcune). 
+
+- Species with direct edges between them have positive associations (blue, e.g. Arctperi and Alopfabr), or negative associations (pink, Zoraspin and Alopacce) even after controlling for all the other species in the data. 
+
+One interpretation is that species with direct edges are interacting, though this can only be a hypothesis, as there may be unobserved species or environmental variables which could be causing the apparent interaction. The main objective of this analysis is to visualise species relationships in order to generate hypotheses to be experimentally tested. 
+
+For fancier plots with `ggplot` and `igraph` see `?plot.cgr`.
+
+
+
+### References
+
+Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). [A general algorithm for covariance modeling of discrete data](https://doi.org/10.1016/j.jmva.2017.12.002). Journal of Multivariate Analysis, 165, 86-100.
+
+Popovic, Gordana C., et al. ["Untangling direct species associations from indirect mediator species effects with graphical models."](https://doi.org/10.1111/2041-210X.13247) Methods in Ecology and Evolution 10.9 (2019): 1571-1583.
+
+
+
+

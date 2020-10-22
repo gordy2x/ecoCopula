@@ -3,6 +3,7 @@
 S3method(fitted,stackedsdm)
 S3method(plot,cgr)
 S3method(plot,cord)
+S3method(plot,stackedsdm)
 S3method(predict,stackedsdm)
 S3method(print,cgr)
 S3method(print,cord)
