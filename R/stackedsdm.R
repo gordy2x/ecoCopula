@@ -46,126 +46,126 @@
 stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial", 
                        trial_size = 1, do_parallel = FALSE, 
                        ncores = NULL, trace = FALSE) {
-     y <- as.matrix(y)
-     if(is.null(colnames(y)))
-          colnames(y) <- paste0("resp", 1:ncol(y))
-     if(is.null(rownames(y)))
-          rownames(y) <- paste0("units", 1:nrow(y))
-     num_units <- nrow(y)
-     num_spp <- ncol(y)
-
-     formula_X <- check_formula_X(formula_X, data = data)
-     
-     family <- check_family(family = family, y = y)
-     if(is.matrix(trial_size)) {
-          if(nrow(trial_size) != num_units | ncol(trial_size) != num_spp)
-               stop("trial_size should either be a scalar, or a matrix of the same as y. If the latter, then columns which are not classed as having binomial responses are ignored.")
-          }
-          
-     if(do_parallel) {
-          if(is.null(ncores))
-               registerDoParallel(cores = parallel::detectCores()-2)
-          if(!is.null(ncores))
-               registerDoParallel(cores = ncores)
-          }
-
-          
-     ##---------------
-     ## Set up function to do SDM per species
-     ##---------------
-     respfit_fn <- function(j) {
-          out_params <- list()
-          
-          if(family[j] %in% c("gaussian", "poisson")) {
-               fit_init <- glm2(formula_X, family = family[j], data = data.frame(resp = y[,j], data))
-               out_params$coefficients <- fit_init$coefficients
-               if(family[j] == "gaussian")
-                    out_params$dispparam <- summary(fit_init)$sigma^2
-               }
-          if(family[j] %in% c("Gamma", "exponential")) {
-               fit_init <- glm2(formula_X, family = Gamma(link = "log"), data = data.frame(resp = y[,j], data))
-               out_params$coefficients <- fit_init$coefficients
-               if(family[j] == "exponential") {
-                    out_params$coefficients <- summary(fit_init, disperson = 1)$coefficients[,1]
-                    }
-               }
-          if(family[j] %in% c("binomial")) {
-               if(length(trial_size) == 1)
-                    cw_trial_size <- rep(trial_size, num_units)
-               if(is.matrix(trial_size))
-                    cw_trial_size <- trial_size[,j]
-               formula_X <- update.formula(formula_X, cbind(resp, trial_size - resp) ~ .)
-               fit_init <- glm2(formula_X, family = "binomial", data = data.frame(resp = y[,j], trial_size = cw_trial_size, data))
-               out_params$coefficients <- fit_init$coefficients
-               }
-          if(family[j] %in% c("negative.binomial")) {
-               fit_init <- manyglm(formula_X, data = data.frame(resp = y[,j], data), family = "negative.binomial")
-               out_params$coefficients <- fit_init$coefficients
-               out_params$dispparam<- fit_init$phi
-               }
-          if(family[j] == "tweedie") {
-               fit_init <- gam(formula_X, data = data.frame(resp = y[,j], data), family = mgcv::tw(), method = "ML")
-               out_params$coefficients <- fit_init$coefficients
-               out_params$dispparam <- summary(fit_init)$dispersion
-               out_params$powerparam <- as.numeric(strsplit(strsplit(fit_init$family$family, "p=")[[1]][2], ")")[[1]])
-               }
-          if(family[j] == "beta") {
-               fit_init <- betareg(formula_X, data = data.frame(resp = y[,j], data), link = "logit") 
-               out_params$coefficients <- fit_init$coefficients$mean
-               out_params$dispparam <- 1/fit_init$coefficients$precision
-               }
-          # if(family[j] == "ztpoisson") {
-          #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson")
-          #      out_params$coefficients <- fit_init$coefficients
-          #      }
-          # if(family[j] == "ztnegative.binomial") {
-          #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin")
-          #      out_params$coefficients <- fit_init$coefficients
-          #      out_params$dispparam <- 1/fit_init$theta
-          #      }
-          # if(family[j] == "zipoisson") {
-          #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson", link = "logit")
-          #      out_params$coefficients <- fit_init$coefficients$count
-          #      out_params$ziintercept <- fit_init$coefficients$zero
-          #      }
-          # if(family[j] == "zinegative.binomial") {
-          #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin", link = "logit")
-          #      out_params$coefficients <- fit_init$coefficients$count
-          #      out_params$ziintercept <- fit_init$coefficients$zero
-          #      out_params$dispparam <- 1/fit_init$theta
-          #      }
-          if(family[j] == "ordinal") {
-               fit_init <- clm(formula_X, data = data.frame(resp = y[,j], data), link = "logit") 
-               out_params$coefficients <- fit_init$beta
-               out_params$cutoffs <- fit_init$alpha
-               }
-          
-          return(list(params = out_params, fit = fit_init))
-          }
-     
-     respfit_cmpfn <- compiler::cmpfun(respfit_fn)
-     rm(respfit_fn)
-     
-     j=NULL #need this to pass check()
-     if(do_parallel)
-          all_fits <- foreach(j = 1:num_spp) %dopar% respfit_cmpfn(j = j)          
-     if(!do_parallel)
-          all_fits <- foreach(j = 1:num_spp) %do% respfit_cmpfn(j = j)          
-
-          
-     ##-----------------
-     ## Format output
-     ##-----------------
-     out_allfits <- list(call = match.call(), fits = all_fits, y = y, formula_X = formula_X, data = data, family = family, trial_size = trial_size)
-     out_allfits$linear_predictor <- sapply(all_fits, function(x) x$fit$linear)
-     out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))
-     dimnames(out_allfits$fitted)=dimnames(y)
-     class(out_allfits) <- "stackedsdm"
-     
-     rm(all_fits)
-     gc()
-     return(out_allfits)
-     }
+        y <- as.matrix(y)
+        if(is.null(colnames(y)))
+                colnames(y) <- paste0("resp", 1:ncol(y))
+        if(is.null(rownames(y)))
+                rownames(y) <- paste0("units", 1:nrow(y))
+        num_units <- nrow(y)
+        num_spp <- ncol(y)
+        
+        formula_X <- check_formula_X(formula_X, data = data)
+        
+        family <- check_family(family = family, y = y)
+        if(is.matrix(trial_size)) {
+                if(nrow(trial_size) != num_units | ncol(trial_size) != num_spp)
+                        stop("trial_size should either be a scalar, or a matrix of the same as y. If the latter, then columns which are not classed as having binomial responses are ignored.")
+        }
+        
+        if(do_parallel) {
+                if(is.null(ncores))
+                        registerDoParallel(cores = parallel::detectCores()-2)
+                if(!is.null(ncores))
+                        registerDoParallel(cores = ncores)
+        }
+        
+        
+        ##---------------
+        ## Set up function to do SDM per species
+        ##---------------
+        respfit_fn <- function(j) {
+                out_params <- list()
+                
+                if(family[j] %in% c("gaussian", "poisson")) {
+                        fit_init <- glm2(formula_X, family = family[j], data = data.frame(resp = y[,j], data))
+                        out_params$coefficients <- fit_init$coefficients
+                        if(family[j] == "gaussian")
+                                out_params$dispparam <- summary(fit_init)$sigma^2
+                }
+                if(family[j] %in% c("Gamma", "exponential")) {
+                        fit_init <- glm2(formula_X, family = Gamma(link = "log"), data = data.frame(resp = y[,j], data))
+                        out_params$coefficients <- fit_init$coefficients
+                        if(family[j] == "exponential") {
+                                out_params$coefficients <- summary(fit_init, disperson = 1)$coefficients[,1]
+                        }
+                }
+                if(family[j] %in% c("binomial")) {
+                        if(length(trial_size) == 1)
+                                cw_trial_size <- rep(trial_size, num_units)
+                        if(is.matrix(trial_size))
+                                cw_trial_size <- trial_size[,j]
+                        formula_X <- update.formula(formula_X, cbind(resp, trial_size - resp) ~ .)
+                        fit_init <- glm2(formula_X, family = "binomial", data = data.frame(resp = y[,j], trial_size = cw_trial_size, data))
+                        out_params$coefficients <- fit_init$coefficients
+                }
+                if(family[j] %in% c("negative.binomial")) {
+                        fit_init <- manyglm(formula_X, data = data.frame(resp = y[,j], data), family = "negative.binomial")
+                        out_params$coefficients <- fit_init$coefficients
+                        out_params$dispparam<- fit_init$phi
+                }
+                if(family[j] == "tweedie") {
+                        fit_init <- gam(formula_X, data = data.frame(resp = y[,j], data), family = mgcv::tw(), method = "ML")
+                        out_params$coefficients <- fit_init$coefficients
+                        out_params$dispparam <- summary(fit_init)$dispersion
+                        out_params$powerparam <- as.numeric(strsplit(strsplit(fit_init$family$family, "p=")[[1]][2], ")")[[1]])
+                }
+                if(family[j] == "beta") {
+                        fit_init <- betareg(formula_X, data = data.frame(resp = y[,j], data), link = "logit") 
+                        out_params$coefficients <- fit_init$coefficients$mean
+                        out_params$dispparam <- 1/fit_init$coefficients$precision
+                }
+                # if(family[j] == "ztpoisson") {
+                #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson")
+                #      out_params$coefficients <- fit_init$coefficients
+                #      }
+                # if(family[j] == "ztnegative.binomial") {
+                #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin")
+                #      out_params$coefficients <- fit_init$coefficients
+                #      out_params$dispparam <- 1/fit_init$theta
+                #      }
+                # if(family[j] == "zipoisson") {
+                #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson", link = "logit")
+                #      out_params$coefficients <- fit_init$coefficients$count
+                #      out_params$ziintercept <- fit_init$coefficients$zero
+                #      }
+                # if(family[j] == "zinegative.binomial") {
+                #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin", link = "logit")
+                #      out_params$coefficients <- fit_init$coefficients$count
+                #      out_params$ziintercept <- fit_init$coefficients$zero
+                #      out_params$dispparam <- 1/fit_init$theta
+                #      }
+                if(family[j] == "ordinal") {
+                        fit_init <- clm(formula_X, data = data.frame(resp = ordered(y[,j]), data), link = "logit") 
+                        out_params$coefficients <- fit_init$beta
+                        out_params$cutoffs <- fit_init$alpha
+                }
+                
+                return(list(params = out_params, fit = fit_init))
+        }
+        
+        respfit_cmpfn <- compiler::cmpfun(respfit_fn)
+        rm(respfit_fn)
+        
+        j=NULL #need this to pass check()
+        if(do_parallel)
+                all_fits <- foreach(j = 1:num_spp) %dopar% respfit_cmpfn(j = j)          
+        if(!do_parallel)
+                all_fits <- foreach(j = 1:num_spp) %do% respfit_cmpfn(j = j)          
+        
+        
+        ##-----------------
+        ## Format output
+        ##-----------------
+        out_allfits <- list(call = match.call(), fits = all_fits, y = y, formula_X = formula_X, data = data, family = family, trial_size = trial_size)
+        out_allfits$linear_predictor <- sapply(all_fits, function(x) x$fit$linear)
+        out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))
+        dimnames(out_allfits$fitted)=dimnames(y)
+        class(out_allfits) <- "stackedsdm"
+        
+        rm(all_fits)
+        gc()
+        return(out_allfits)
+}
      
      
 #' @export 
