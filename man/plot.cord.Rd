@@ -44,18 +44,18 @@ Plots an ordination of latent variables and their corresponding coefficients (bi
 \examples{
 X <- as.data.frame(spider$x)
 abund <- spider$abund
-spider_mod <- stackedsdm(abund,~1, data = X) 
+spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 spid_lv=cord(spider_mod)
 #colour sites according to second column of x (bare sand)
 cols=ifelse(spider$x[,2]>0,"black","red")
 plot(spid_lv,biplot = FALSE,site.col=cols, site.text = TRUE)
 
-\dontrun{
+\donttest{
 library(ggplot2)
 library(RColorBrewer)
 alpha= 2.5
 site_res <- data.frame(spid_lv$scores,X)
-sp_res <- data.frame(ord_cord$loadings)
+sp_res <- data.frame(spid_lv$loadings,species=colnames(abund))
 ggplot()+
  geom_point(aes(x=Factor1,y=Factor2,color = reflection ),site_res)+
  geom_text(aes(x = Factor1*alpha, y = Factor2*alpha,label = species),data=sp_res)+

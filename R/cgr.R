@@ -32,7 +32,7 @@
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund[,1:5]
-#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph,pad=1)
 #' @import mvabund

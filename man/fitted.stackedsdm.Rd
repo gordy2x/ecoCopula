@@ -37,13 +37,13 @@ abund <- spider$abund
 myfamily <- "negative.binomial"
 # Example 1: Funkier example where Species are assumed to have different distributions
 # Fit models including all covariates are linear terms, but exclude for bare sand
-fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily)
+fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily, ncores=2)
 fitted(fit0)
 
 # Example 2: Funkier example where Species are assumed to have different distributions
 abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
 myfamily <- c(rep(c("binomial"), 3),
               rep(c("negative.binomial"), (ncol(abund)-3)))
-fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
+fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily, ncores=2)
 fitted(fit0)
 }

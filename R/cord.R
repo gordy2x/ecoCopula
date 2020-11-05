@@ -5,7 +5,7 @@
 #' @param nlv number of latent variables (default = 2, for plotting on a scatterplot)
 #' @param n.samp integer (default = 500), number of sets residuals used for importance sampling 
 #' (optional, see detail)
-#' @param seed integer (default = 1), seed for random number generation (optional, see detail)
+#' @param seed integer (default = NULL), seed for random number generation (optional)
 
 #' @section Details:
 #' \code{cord} is used to fit a Gaussian copula factor analytic model to multivariate discrete data, such as co-occurrence (multi species) data in ecology. The model is estimated using importance sampling with \code{n.samp} sets of randomised quantile or "Dunn-Smyth" residuals (Dunn & Smyth 1996), and the \code{\link{factanal}} function. The seed is controlled so that models with the same data and different predictors can be compared.  
@@ -29,15 +29,16 @@
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
-#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 #' spid_lv=cord(spider_mod)
 #' plot(spid_lv,biplot = TRUE)
 cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     
     # code chunk from simulate.lm to select seed
+    
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
         runif(1)
-    if (is.null(seed)) { 
+    if (is.null(seed)) {
         RNGstate <- get(".Random.seed", envir = .GlobalEnv)
     } else {
         R.seed <- get(".Random.seed", envir = .GlobalEnv)
@@ -45,6 +46,11 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
         RNGstate <- structure(seed, kind = as.list(RNGkind()))
         on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
     }
+    
+    
+    # R.seed <- .Random.seed
+    # on.exit( { .Random.seed <<- R.seed } )
+    # set.seed(seed)
     
     
     if (floor(n.samp) != ceiling(n.samp)) 
@@ -56,12 +62,9 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     if (floor(nlv) != ceiling(nlv)) 
         stop("nlv must be an integer")
     
-    # always same result unless specified otherwise
-    set.seed(seed)
-    
+
     # simulate full set of residuals n.samp times
     res = simulate.res.S(obj, n.res = n.samp)
-    
     # carry out factor analysis
     S.list = res$S.list
     res = res$res
@@ -75,7 +78,6 @@ cord <- function(obj, nlv = 2, n.samp = 500, seed = NULL) {
     colnames(Sig.out)=rownames(Sig.out)=colnames(Th.out)=rownames(Th.out)=colnames(obj$y)
     
     res.mean <-  plyr::aaply(plyr::laply(res,function(x) x),c(2,3),weighted.mean,weighs=A$weights)
-    # res.mode <- plyr::laply(res,function(x) x)[which(A$weights==max(A$weights)),,]
     Scores = t(as.matrix(A$loadings)) %*% A$theta %*% t(res.mean)
     
     BIC.out = logL = NULL

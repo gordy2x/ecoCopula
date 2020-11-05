@@ -26,12 +26,14 @@ Simulates new data from a given cord object
 abund = spider$abund
 X = data.frame(spider$x)
 
-spider_mod_ssdm = stackedsdm(abund,~1, data = X)
+spider_mod_ssdm = stackedsdm(abund,~1, data = X, ncores=2)
 spid_lv_ssdm = cord(spider_mod_ssdm)
 simulate(spid_lv_ssdm, nsim=2)
 
-\dontrun{
+\donttest{
+# using mvabund
 library(mvabund) #for manyglm
+abund=mvabund(abund)
 spider_mod = manyglm(abund~1)
 spid_lv = cord(spider_mod)
 simulate(spid_lv)
@@ -42,7 +44,7 @@ Xnew = X[1:10,]
 simulate(spid_lv_X, newdata = Xnew)
 simulate(spid_lv_X, nsim=2, newdata = Xnew)
 
-spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X)
+spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X, ncores=2)
 spid_lv_X_ssdm = cord(spider_mod_X_ssdm)
 simulate(spid_lv_X_ssdm, newdata = Xnew)
 }

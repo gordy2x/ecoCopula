@@ -15,7 +15,7 @@ or  \code{\link[mvabund]{manyany}} with ordinal models \code{\link[ordinal]{clm}
 \item{n.samp}{integer (default = 500), number of sets residuals used for importance sampling 
 (optional, see detail)}
 
-\item{seed}{integer (default = 1), seed for random number generation (optional, see detail)}
+\item{seed}{integer (default = NULL), seed for random number generation (optional)}
 }
 \value{
 \code{loadings} latent factor loadings
@@ -53,7 +53,7 @@ Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for cova
 \examples{
 X <- as.data.frame(spider$x)
 abund <- spider$abund
-spider_mod <- stackedsdm(abund,~1, data = X) 
+spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 spid_lv=cord(spider_mod)
 plot(spid_lv,biplot = TRUE)
 }

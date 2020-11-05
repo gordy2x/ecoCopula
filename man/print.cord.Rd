@@ -17,7 +17,7 @@ Print function for cord object
 \examples{
 X <- as.data.frame(spider$x)
 abund <- spider$abund
-spider_mod <- stackedsdm(abund,~1, data = X) 
+spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 spid_lv=cord(spider_mod)
 print(spid_lv)
 }

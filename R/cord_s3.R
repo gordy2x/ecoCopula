@@ -15,18 +15,18 @@
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
-#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 #' spid_lv=cord(spider_mod)
 #' #colour sites according to second column of x (bare sand)
 #' cols=ifelse(spider$x[,2]>0,"black","red")
 #' plot(spid_lv,biplot = FALSE,site.col=cols, site.text = TRUE)
 #' 
-#'\dontrun{
+#'\donttest{
 #'library(ggplot2)
 #'library(RColorBrewer)
 #'alpha= 2.5
 #'site_res <- data.frame(spid_lv$scores,X)
-#'sp_res <- data.frame(ord_cord$loadings)
+#'sp_res <- data.frame(spid_lv$loadings,species=colnames(abund))
 #'ggplot()+
 #'  geom_point(aes(x=Factor1,y=Factor2,color = reflection ),site_res)+
 #'  geom_text(aes(x = Factor1*alpha, y = Factor2*alpha,label = species),data=sp_res)+
@@ -88,7 +88,7 @@ plot.cord <- function(x, biplot = FALSE,site.col="black",sp.col="blue",
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
-#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 #' spid_lv=cord(spider_mod)
 #' print(spid_lv)
 print.cord = function (x, ...) 
@@ -112,7 +112,7 @@ print.cord = function (x, ...)
 #' @examples
 #' X <- as.data.frame(spider$x)
 #' abund <- spider$abund[,1:5]
-#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 #' spid_lv=cord(spider_mod)
 #' summary(spid_lv)
 summary.cord = function (object, ...) 
@@ -141,12 +141,14 @@ summary.cord = function (object, ...)
 #' abund = spider$abund
 #' X = data.frame(spider$x)
 #'
-#' spider_mod_ssdm = stackedsdm(abund,~1, data = X)
+#' spider_mod_ssdm = stackedsdm(abund,~1, data = X, ncores=2)
 #' spid_lv_ssdm = cord(spider_mod_ssdm)
 #' simulate(spid_lv_ssdm, nsim=2)
 #' 
-#'\dontrun{
+#'\donttest{
+#' # using mvabund
 #' library(mvabund) #for manyglm
+#' abund=mvabund(abund)
 #' spider_mod = manyglm(abund~1)
 #' spid_lv = cord(spider_mod)
 #' simulate(spid_lv)
@@ -157,7 +159,7 @@ summary.cord = function (object, ...)
 #' simulate(spid_lv_X, newdata = Xnew)
 #' simulate(spid_lv_X, nsim=2, newdata = Xnew)
 #'
-#' spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X)
+#' spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X, ncores=2)
 #' spid_lv_X_ssdm = cord(spider_mod_X_ssdm)
 #' simulate(spid_lv_X_ssdm, newdata = Xnew)
 #' }

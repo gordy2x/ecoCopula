@@ -10,7 +10,7 @@ check_family <- function(family, y) {
      complete_family <- match.arg(complete_family, choices = c("gaussian", "negative.binomial", "poisson", "binomial", "tweedie", "Gamma",
           "exponential", "beta", "ordinal", "ztpoisson", "ztnegative.binomial", "zipoisson", "zinegative.binomial"), several.ok = TRUE)
      if(length(complete_family) != ncol(y))
-          stop("At least one of the elements in family is not supported in current version of boral...sorry!")
+          stop("At least one of the elements in family is not supported in current version of stackedsdm!")
 
      if(any(complete_family == "ordinal")) {
           if(sum(y[, complete_family == "ordinal", drop = FALSE] == 0) > 0) 

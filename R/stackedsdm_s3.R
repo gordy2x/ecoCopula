@@ -18,14 +18,14 @@
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
 #' # Fit models including all covariates are linear terms, but exclude for bare sand
-#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily)
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily, ncores=2)
 #' fitted(fit0)
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
 #' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
 #' myfamily <- c(rep(c("binomial"), 3),
 #'               rep(c("negative.binomial"), (ncol(abund)-3)))
-#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
+#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily, ncores=2)
 #' fitted(fit0)
 fitted.stackedsdm <- function(object, ...) {
   return(object$fitted)
@@ -53,17 +53,17 @@ fitted.stackedsdm <- function(object, ...) {
 #' # Example 1: Simple example
 #' myfamily <- "negative.binomial"
 #' # Fit models including all covariates are linear terms, but exclude for bare sand
-#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily, ncores=2) 
 #' predict(fit0, type = "response")
 #'
-#'\dontrun{
+#'\donttest{
 #' # Example 2: Funkier example where Species are assumed to have different distributions
 #' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
 #' myfamily <- c(rep(c("binomial"), 3),
 #'        rep(c("negative.binomial"), 5),
 #'        rep(c("tweedie"), 4)
 #'        )
-#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
+#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily, ncores=2)
 #' predict(fit0, type = "response")
 #'}
 #' @export 
@@ -126,16 +126,28 @@ predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = F
 #' myfamily <- "negative.binomial"
 #' # Example 1: Funkier example where Species are assumed to have different distributions
 #' # Fit models including all covariates are linear terms, but exclude for bare sand
-#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily) 
+#' fit0 <- stackedsdm(abund, formula_X = ~. -bare.sand, data = X, family = myfamily, ncores=2) 
 #' residuals(fit0)
 #'
 #' # Example 2: Funkier example where Species are assumed to have different distributions
 #' abund[,1:3] <- (abund[,1:3]>0)*1 # First three columns for presence absence
 #' myfamily <- c(rep(c("binomial"), 3),
 #'               rep(c("negative.binomial"), (ncol(abund)-3)))
-#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily)
+#' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily, ncores=2)
 #' residuals(fit0)
 residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
+  
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+    runif(1)
+  if (is.null(seed)) {
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  } else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+  
   type <- match.arg(type, choices = c("response", "dunnsmyth", "PIT"))
   num_units <- nrow(object$y)
   num_spp <- ncol(object$y)
@@ -146,7 +158,6 @@ residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
     out <- out
   
   if(type %in% c("dunnsmyth", "PIT")) {
-    set.seed(seed)
     
     for(j in 1:ncol(out)) {
       if(object$family[j] %in% c("gaussian")) 
@@ -205,7 +216,6 @@ residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
       }
     }
     
-    set.seed(NULL)
   }
   
   if(type == "dunnsmyth")
