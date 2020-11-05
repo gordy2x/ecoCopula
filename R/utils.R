@@ -15,6 +15,7 @@ simulate.res.S <- function(obj, n.res = 200) {
 
     many.obj = list(obj)[rep(1, n.res)]
     res = plyr::llply(many.obj, residuals)
+    res = plyr::llply(res, fix_inf)
     
     # residuals function for manyany currently output on uniform scale
     if (min(res[[1]]) > -1e-05) {
@@ -178,4 +179,16 @@ graph_from_partial<-function(partial){
     igraph::graph_from_data_frame(Edges, directed=FALSE, vertices=vertex)
 }
 
-
+#' Fix infinite residuals
+#'
+#' Set large residuals to max/min value
+#'
+#' @param mat a matrix 
+#' @param lim the max/min value
+#'
+#' @noRd
+fix_inf<-function(mat, lim=5){
+    mat[mat >  lim] = lim
+    mat[mat < (-lim)] = -lim
+    mat
+}

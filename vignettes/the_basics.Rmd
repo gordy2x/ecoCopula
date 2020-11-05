@@ -54,10 +54,9 @@ Model based ordination methods, including copula ordination using the `cord` fun
 Graphical models look at direct and indirect associations between variables (taxa). They try to answer the question: *Is the abundance of this pair of taxa related, after accounting for the effect of the abundances of all the other taxa in the data?* A simple and crude way to do this might be regressing each of the two taxa separately (as response) against all the other taxa in the data (as predictors), and then looking for any residual correlation between the pair. Graphical models do something like this, but using modern statistical techniques to improve efficiency and model the community jointly. 
 
 
-To install `ecoCopula` while it is not on CRAN, use the `devtools` package.
-```{r, echo=FALSE, eval=FALSE}
-#install.packages("devtools")
-devtools::install_github("gordy2x/ecoCopula", upgrade = "never")
+Install `ecoCopula` in the usual way.
+```{r, eval=FALSE}
+install.packages("ecoCopula")
 ```
  
 Then attach the library.
@@ -118,7 +117,7 @@ To plot a *graph* of the spider counts `abund`, we again first fit a marginal mo
 # fit marginal model
 spider_nb <- stackedsdm(abund,~., data = X, family="negative.binomial", ncores = 2) #eqiv. manyglm()
 # fit copula ordination 
-spid_gr=cgr(spider_nb, seed=2)
+spid_gr=cgr(spider_nb, seed=3)
 # biplot
 plot(spid_gr, pad=1)
 ```
@@ -191,7 +190,8 @@ We will control for slope.
 ```{r message=FALSE, warning=FALSE}
 cont_preds=sapply(brycesite, class)%in%c("int","num")
 brycesite[,cont_preds]=scale(brycesite[,cont_preds])
-bryce_marg_all <- stackedsdm(bryceord, formula_X = ~ slope, data = brycesite, family="ordinal",ncores = 2)
+bryce_marg_all <- stackedsdm(bryceord, formula_X = ~ slope, data = brycesite,
+                             family="ordinal",ncores = 2)
 
 bryce_graph<-cgr(bryce_marg_all, seed = 1) #seed for demonstration
 ```
