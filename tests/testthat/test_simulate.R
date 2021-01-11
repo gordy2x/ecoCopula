@@ -1,4 +1,4 @@
-source("fixtures.R")
+load("fixtures.RData")
 
 context("limited support for stackedsdm")
 
