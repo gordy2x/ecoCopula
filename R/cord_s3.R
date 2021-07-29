@@ -211,9 +211,9 @@ simulate_newY = function(object, prs) {
       if (all(object$obj$family == "negative.binomial")) {
         size = get_size(object)
         newY[,iVar] = qnbinom(pnorm(sim[,iVar]), size = size[iVar], mu = prs[,iVar])
-      } else if (substr(object$obj$call$family, 1, 7) == "poisson") {
+      } else if (any(substr(object$obj$call$family, 1, 7) == "poisson")) {
         newY[,iVar] = qpois(pnorm(sim[,iVar]), lambda = prs[,iVar])
-      } else if (substr(object$obj$call$family, 1, 8) == "binomial") {
+      } else if (any(substr(object$obj$call$family, 1, 8) == "binomial")) {
         newY[,iVar] = qbinom(pnorm(sim[,iVar]), size = 1, prob = prs[,iVar])
       } else {
         stop("'family'", object$obj$family, "not recognized")
