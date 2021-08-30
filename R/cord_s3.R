@@ -181,9 +181,7 @@ simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data, ...
   
   check_object_family(object)
   newdata = reshape_newdata(object, nsim, newdata)
-  prs = suppressWarnings(
-    predict(object$obj, type = "response", newdata = newdata)
-  ) # warning for family=poisson suppressed
+  prs = predict_responses(object, newdata)
   newY = simulate_newY(object, prs)
   
   return (newY)
