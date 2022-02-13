@@ -46,9 +46,8 @@ The matrix of node positions (\code{P}) is returned silently.
 Plot graph of direct species associations.
 }
 \examples{
-X <- as.data.frame(spider$x)
 abund <- spider$abund[,1:5]
-spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 spid_graph=cgr(spider_mod)
 plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), 
                  vertex.col = "black",vary.edge.lwd=TRUE)

@@ -32,7 +32,7 @@ Francis K.C. Hui <francis.hui@anu.edu.au>.
 }
 
 \examples{
-X <- as.data.frame(spider$x)
+X <- spider$x
 abund <- spider$abund
 
 # Example 1: Simple example

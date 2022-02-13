@@ -29,7 +29,8 @@
 #' @import stats
 #' @export 
 #' @examples
-#' X <- as.data.frame(spider$x)
+#' data(spider)
+#' X <- spider$x
 #' abund <- spider$abund
 #'
 #' # Example 1: Simple example

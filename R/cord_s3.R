@@ -13,7 +13,7 @@
 #' @importFrom grDevices devAskNewPage
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
+#' X <- spider$x
 #' abund <- spider$abund
 #' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 #' spid_lv=cord(spider_mod)
@@ -86,9 +86,8 @@ plot.cord <- function(x, biplot = FALSE,site.col="black",sp.col="blue",
 #' @seealso \code{\link{cord}}
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
-#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+#' spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 #' spid_lv=cord(spider_mod)
 #' print(spid_lv)
 print.cord = function (x, ...) 
@@ -110,9 +109,8 @@ print.cord = function (x, ...)
 #' @seealso \code{\link{cord}}
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
 #' abund <- spider$abund[,1:5]
-#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+#' spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 #' spid_lv=cord(spider_mod)
 #' summary(spid_lv)
 summary.cord = function (object, ...) 
@@ -139,9 +137,8 @@ summary.cord = function (object, ...)
 #' Defaults to the X covariates in the fitted model.
 #' @examples
 #' abund = spider$abund
-#' X = data.frame(spider$x)
 #'
-#' spider_mod_ssdm = stackedsdm(abund,~1, data = X, ncores=2)
+#' spider_mod_ssdm = stackedsdm(abund,~1, data = spider$x, ncores=2)
 #' spid_lv_ssdm = cord(spider_mod_ssdm)
 #' simulate(spid_lv_ssdm, nsim=2)
 #' 
@@ -153,13 +150,13 @@ summary.cord = function (object, ...)
 #' spid_lv = cord(spider_mod)
 #' simulate(spid_lv)
 #'
-#' spider_mod_X = manyglm(abund ~ soil.dry + bare.sand, data=X)
+#' spider_mod_X = manyglm(abund ~ soil.dry + bare.sand, data=spider$x)
 #' spid_lv_X = cord(spider_mod_X)
-#' Xnew = X[1:10,]
+#' Xnew = spider$x[1:10,]
 #' simulate(spid_lv_X, newdata = Xnew)
 #' simulate(spid_lv_X, nsim=2, newdata = Xnew)
 #'
-#' spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = X, ncores=2)
+#' spider_mod_X_ssdm = stackedsdm(abund, formula_X = ~. -bare.sand, data = spider$x, ncores=2)
 #' spid_lv_X_ssdm = cord(spider_mod_X_ssdm)
 #' simulate(spid_lv_X_ssdm, newdata = Xnew)
 #' }

@@ -11,7 +11,7 @@
 #' @examples
 #' library(mvabund)
 #' data(spider)
-#' X <- as.data.frame(spider$x)
+#' X <- spider$x
 #' abund <- spider$abund
 #'
 #' # Example 1: Simple example
@@ -47,7 +47,7 @@ fitted.stackedsdm <- function(object, ...) {
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
 #' @importFrom stats na.pass
 #' @examples
-#' X <- as.data.frame(spider$x)
+#' X <- spider$x
 #' abund <- spider$abund
 #'
 #' # Example 1: Simple example
@@ -119,7 +119,7 @@ predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = F
 #' @import stats
 #' @importFrom tweedie ptweedie  
 #' @examples
-#' X <- as.data.frame(spider$x)
+#' X <- spider$x
 #' abund <- spider$abund
 #'
 #' # Example 1: Simple example
@@ -231,9 +231,8 @@ residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
 #' @param ... not used
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
 #' abund <- spider$abund
-#' spider_mod <- stackedsdm(abund,~1, data = X) 
+#' spider_mod <- stackedsdm(abund,~1, data = spider$x) 
 #' plot(spider_mod)
 plot.stackedsdm = function(x,...) {
   scatter.smooth(residuals(x)~fitted(x),

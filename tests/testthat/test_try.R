@@ -3,7 +3,7 @@ context("my first test file")
 library(ecoCopula)
 library(mvabund)
 data(spider)
-spider.mod=manyglm(mvabund(spider$abund)~spider$x)
+spider.mod=manyglm(mvabund(spider$abund)~.,data=spider$x)
 
 test_that("error", {
   expect_error(cgr(4))

@@ -16,9 +16,8 @@
 #' @importFrom grDevices devAskNewPage
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
 #' abund <- spider$abund[,1:5]
-#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+#' spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 #' spid_graph=cgr(spider_mod)
 #' plot(spid_graph, edge.col=c("forestgreen","darkorchid4"), 
 #'                  vertex.col = "black",vary.edge.lwd=TRUE)
@@ -89,9 +88,8 @@ plot.cgr = function(x, P = NULL,
 #' @seealso \code{\link{cgr}}
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
 #' abund <- spider$abund[,1:5]
-#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+#' spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 #' spid_graph=cgr(spider_mod)
 #' print(spid_graph)
 print.cgr = function (x, ...) 
@@ -115,9 +113,8 @@ print.cgr = function (x, ...)
 #' @seealso \code{\link{cgr}}
 #' @export
 #' @examples
-#' X <- as.data.frame(spider$x)
 #' abund <- spider$abund[,1:5]
-#' spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+#' spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 #' spid_graph=cgr(spider_mod)
 #' summary(spid_graph)
 summary.cgr = function (object, ...) 
