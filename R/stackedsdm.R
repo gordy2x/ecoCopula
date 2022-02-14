@@ -46,6 +46,8 @@
 stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial", 
                        trial_size = 1, do_parallel = FALSE, 
                        ncores = NULL, trace = FALSE) {
+
+        tol <- 1e-8
         y <- as.matrix(y)
         if(is.null(colnames(y)))
                 colnames(y) <- paste0("resp", 1:ncol(y))
@@ -157,7 +159,17 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
         ## Format output
         ##-----------------
         out_allfits <- list(call = match.call(), fits = all_fits, y = y, formula_X = formula_X, data = data, family = family, trial_size = trial_size)
-        out_allfits$linear_predictor <- sapply(all_fits, function(x) x$fit$linear)
+        out_allfits$linear_predictor <- sapply(1:num_spp, function(x) {
+                if(family[x] != "ordinal") 
+                        s <- all_fits[[x]]$fit$linear
+                if(family[x] == "ordinal") {
+                        s <- predict(all_fits[[x]]$fit, newdata = data, type = "linear.predictor")$eta1[,1]
+                        s = pmax(s, binomial()$linkfun(tol)/2)
+                        s = pmin(s, binomial()$linkfun(1-tol)/2)
+                        }
+                return(s) 
+                }
+                )
         out_allfits$fitted <- sapply(all_fits, function(x) fitted(x$fit))
         dimnames(out_allfits$fitted)=dimnames(y)
         class(out_allfits) <- "stackedsdm"
