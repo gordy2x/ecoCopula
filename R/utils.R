@@ -192,3 +192,40 @@ fix_inf<-function(mat, lim=5){
     mat[mat < (-lim)] = -lim
     mat
 }
+
+#' get predictions
+#'
+#' Get predicted responses
+#'
+#' @param object
+#' @param newdata
+#'
+#' @noRd
+predict_responses = function(object, newdata) {
+    prs = try(
+        suppressWarnings(
+            predict(object$obj, type = "response", newdata = newdata)
+        ), # warning for family=poisson suppressed
+    silent = TRUE)
+
+    if (inherits(prs, "try-error")) {
+        coeffs = object$obj$coefficients
+        offset = object$obj$offset
+        design.matrix = model.matrix(object$obj$formula[-2], data = newdata)
+        xbeta = design.matrix %*% coeffs + offset
+
+        if (object$obj$family == "negative.binomial") {
+          prs = MASS::negative.binomial(theta = 1)$linkinv(xbeta)
+        } else if (object$obj$family == "poisson") {
+          prs = poisson(link = "log")$linkinv(xbeta)
+        } else if (object$obj$family == "binomial(link=logit)") {
+          prs = binomial(link = "logit")$linkinv(xbeta)
+        } else if (object$obj$family == "binomial(link=cloglog)") {
+          prs = binomial(link = "cloglog")$linkinv(xbeta)
+        } else {
+          stop("'family'", object$obj$family, "not recognized")
+        }
+    }
+
+  return (prs)
+}
