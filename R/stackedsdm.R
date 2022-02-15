@@ -116,26 +116,26 @@ stackedsdm <- function(y, formula_X= ~1, data=NULL, family="negative.binomial",
                         out_params$coefficients <- fit_init$coefficients$mean
                         out_params$dispparam <- 1/fit_init$coefficients$precision
                 }
-                # if(family[j] == "ztpoisson") {
-                #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson")
-                #      out_params$coefficients <- fit_init$coefficients
-                #      }
-                # if(family[j] == "ztnegative.binomial") {
-                #      fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin")
-                #      out_params$coefficients <- fit_init$coefficients
-                #      out_params$dispparam <- 1/fit_init$theta
-                #      }
-                # if(family[j] == "zipoisson") {
-                #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson", link = "logit")
-                #      out_params$coefficients <- fit_init$coefficients$count
-                #      out_params$ziintercept <- fit_init$coefficients$zero
-                #      }
-                # if(family[j] == "zinegative.binomial") {
-                #      fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin", link = "logit")
-                #      out_params$coefficients <- fit_init$coefficients$count
-                #      out_params$ziintercept <- fit_init$coefficients$zero
-                #      out_params$dispparam <- 1/fit_init$theta
-                #      }
+                if(family[j] == "ztpoisson") {
+                     fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson")
+                     out_params$coefficients <- fit_init$coefficients
+                     }
+                if(family[j] == "ztnegative.binomial") {
+                     fit_init <- countreg::zerotrunc(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin")
+                     out_params$coefficients <- fit_init$coefficients
+                     out_params$dispparam <- 1/fit_init$theta
+                     }
+                if(family[j] == "zipoisson") {
+                     fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "poisson", link = "logit")
+                     out_params$coefficients <- fit_init$coefficients$count
+                     out_params$ziintercept <- fit_init$coefficients$zero
+                     }
+                if(family[j] == "zinegative.binomial") {
+                     fit_init <- countreg::zeroinfl(formula_X, data = data.frame(resp = y[,j], data), dist = "negbin", link = "logit")
+                     out_params$coefficients <- fit_init$coefficients$count
+                     out_params$ziintercept <- fit_init$coefficients$zero
+                     out_params$dispparam <- 1/fit_init$theta
+                     }
                 if(family[j] == "ordinal") {
                         fit_init <- clm(formula_X, data = data.frame(resp = ordered(y[,j]), data), link = "logit") 
                         out_params$coefficients <- fit_init$beta
