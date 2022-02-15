@@ -2,7 +2,8 @@ Package: ecoCopula
 Title: Graphical Modelling and Ordination using Copulas
 Version: 1.0.1
 Authors@R: c(person("Gordana", "Popovic", email = "g.popovic@unsw.edu.au", role = c("aut", "cre")),
-            person("Michelle", "Lim", role = "ctb"), person("Francis K.C.", "Hui", role = "ctb"))
+            person("David", "Warton", role = "ctb"), person("Francis K.C.", "Hui", role = "ctb"),
+            person("Michelle", "Lim", role = "ctb"))
 Description: Creates 'graphs' of species associations (interactions) and ordination biplots from 
     co-occurrence data by fitting discrete gaussian copula graphical models. Methods described in
     Popovic, GC., Hui, FKC., Warton, DI., (2018) <doi:10.1016/j.jmva.2017.12.002>.
@@ -13,7 +14,7 @@ Imports: mvabund, glasso, plyr, sna, MASS, tweedie,
 License: LGPL (>= 2.1)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr, rmarkdown, testthat,tidyr, ggplot2, 
     RColorBrewer, ggraph, labdsv, tidygraph

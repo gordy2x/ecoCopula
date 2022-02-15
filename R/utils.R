@@ -197,8 +197,8 @@ fix_inf<-function(mat, lim=5){
 #'
 #' Get predicted responses
 #'
-#' @param object
-#' @param newdata
+#' @param object a cord object
+#' @param newdata a dataframe of covariates
 #'
 #' @noRd
 predict_responses = function(object, newdata) {

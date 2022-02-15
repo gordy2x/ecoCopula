@@ -4,9 +4,22 @@ R package to find direct and indirect species associations from co-occurrence da
 
 ### Installation
 
+To install `ecoCopula` from [CRAN](https://CRAN.R-project.org/package=ecoCopula):
+```r
+install.packages("ecoCopula")
+```
+
+For the development version with the latest bells and whistles:
 ```r
 # install.packages("devtools")
 devtools::install_github("gordy2x/ecoCopula")
+```
+
+For the development version with zero-inflated functionality:
+```r
+# install.packages("devtools")
+devtools::install_github("r-forge/countreg/pkg")
+devtools::install_github("gordy2x/ecoCopula", ref="e401671")
 ```
 
 If you have trouble installing, please email me at [g.popovic@unsw.edu.au](mailto:g.popovic@unsw.edu.au)
