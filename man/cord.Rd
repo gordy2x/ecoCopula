@@ -51,9 +51,8 @@ Popovic, G. C., Hui, F. K., & Warton, D. I. (2018). A general algorithm for cova
 }
 
 \examples{
-X <- as.data.frame(spider$x)
 abund <- spider$abund
-spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 spid_lv=cord(spider_mod)
 plot(spid_lv,biplot = TRUE)
 }

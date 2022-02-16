@@ -15,9 +15,8 @@
 Summary function for cgr object
 }
 \examples{
-X <- as.data.frame(spider$x)
 abund <- spider$abund[,1:5]
-spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
+spider_mod <- stackedsdm(abund,~1, data = spider$x, ncores=2) 
 spid_graph=cgr(spider_mod)
 summary(spid_graph)
 }

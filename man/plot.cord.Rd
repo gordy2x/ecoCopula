@@ -42,7 +42,7 @@ an ordination plot.
 Plots an ordination of latent variables and their corresponding coefficients (biplot).
 }
 \examples{
-X <- as.data.frame(spider$x)
+X <- spider$x
 abund <- spider$abund
 spider_mod <- stackedsdm(abund,~1, data = X, ncores=2) 
 spid_lv=cord(spider_mod)

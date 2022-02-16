@@ -15,8 +15,7 @@
 Plot residuals of stackedsdm.
 }
 \examples{
-X <- as.data.frame(spider$x)
 abund <- spider$abund
-spider_mod <- stackedsdm(abund,~1, data = X) 
+spider_mod <- stackedsdm(abund,~1, data = spider$x) 
 plot(spider_mod)
 }
