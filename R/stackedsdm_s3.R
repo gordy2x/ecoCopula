@@ -7,6 +7,7 @@
 #' @return A matrix of fitted values.
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
+#' @export fitted.stackedsdm
 #' @export 
 #' @examples
 #' library(mvabund)
@@ -66,6 +67,7 @@ fitted.stackedsdm <- function(object, ...) {
 #' fit0 <- stackedsdm(abund, formula_X = ~ bare.sand, data = X, family = myfamily, ncores=2)
 #' predict(fit0, type = "response")
 #'}
+#' @export predict.stackedsdm
 #' @export 
 predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = FALSE, na.action = na.pass, ...) {
   num_spp <- length(object$family)
@@ -115,6 +117,7 @@ predict.stackedsdm <- function(object, newdata = NULL, type = "link", se.fit = F
 #' @return A matrix of residuals
 #' @section Author(s):
 #' Francis K.C. Hui <francis.hui@anu.edu.au>.
+#' @export residuals.stackedsdm
 #' @export 
 #' @import stats
 #' @importFrom tweedie ptweedie  
@@ -229,6 +232,7 @@ residuals.stackedsdm <- function(object, type = "dunnsmyth", seed = NULL, ...) {
 #'
 #' @param x is a stackedsdm object.
 #' @param ... not used
+#' @export plot.stackedsdm
 #' @export
 #' @examples
 #' abund <- spider$abund
