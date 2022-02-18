@@ -14,6 +14,7 @@
 #' The matrix of node positions (\code{P}) is returned silently.
 #' @seealso \code{\link{gplot}}, \code{\link{cgr}}
 #' @importFrom grDevices devAskNewPage
+#' @export plot.cgr
 #' @export
 #' @examples
 #' abund <- spider$abund[,1:5]
@@ -86,6 +87,7 @@ plot.cgr = function(x, P = NULL,
 #' @param x is a cgr object, e.g. from output of \code{\link{cgr}}.
 #' @param ... not used
 #' @seealso \code{\link{cgr}}
+#' @export print.cgr
 #' @export
 #' @examples
 #' abund <- spider$abund[,1:5]
@@ -111,6 +113,7 @@ print.cgr = function (x, ...)
 #' @param object is a cgr object, e.g. from output of \code{\link{cgr}}.
 #' @param ... not used
 #' @seealso \code{\link{cgr}}
+#' @export summary.cgr
 #' @export
 #' @examples
 #' abund <- spider$abund[,1:5]

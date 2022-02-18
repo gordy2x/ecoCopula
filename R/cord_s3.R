@@ -11,6 +11,7 @@
 #' @param ...	other parameters to be passed through to plotting functions. 
 #' @return an ordination plot.
 #' @importFrom grDevices devAskNewPage
+#' @export plot.cord
 #' @export
 #' @examples
 #' X <- spider$x
@@ -84,6 +85,7 @@ plot.cord <- function(x, biplot = FALSE,site.col="black",sp.col="blue",
 #' @param x is a cord object, e.g. from output of \code{\link{cord}}.
 #' @param ... not used
 #' @seealso \code{\link{cord}}
+#' @export print.cord
 #' @export
 #' @examples
 #' abund <- spider$abund
@@ -107,6 +109,7 @@ print.cord = function (x, ...)
 #' @param object is a cord object, e.g. from output of \code{\link{cgr}}.
 #' @param ... not used
 #' @seealso \code{\link{cord}}
+#' @export summary.cord
 #' @export
 #' @examples
 #' abund <- spider$abund[,1:5]
@@ -161,6 +164,7 @@ summary.cord = function (object, ...)
 #' simulate(spid_lv_X_ssdm, newdata = Xnew)
 #' }
 #' @importFrom stats simulate
+#' @export simulate.cord
 #' @export
 simulate.cord = function(object, nsim=1, seed=NULL, newdata=object$obj$data, ...) {
   
