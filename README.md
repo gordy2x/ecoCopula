@@ -18,7 +18,7 @@ devtools::install_github("gordy2x/ecoCopula")
 For the development version with zero-inflated functionality:
 ```r
 # install.packages("devtools")
-devtools::install_github("r-forge/countreg/pkg")
+# devtools::install_github("r-forge/countreg/pkg")
 devtools::install_github("gordy2x/ecoCopula", ref="e401671")
 ```
 
