@@ -6,7 +6,7 @@
 #' @param sp.col species name colour (default is blue), vector of length equal to the number of sites (if arrow=TRUE)
 #' @param alpha scaling factor for ratio of scores to loadings (default is 0.7)
 #' @param arrow should arrows be plotted for species loadings (default is TRUE)
-#' @param site.text should sites be labeled by rown names of data (default is FALSE, points are drawn)
+#' @param site.text should sites be labeled by row names of data (default is FALSE, points are drawn)
 #' @param labels the labels for sites and species (for biplots only) (default is data labels)
 #' @param ...	other parameters to be passed through to plotting functions. 
 #' @return an ordination plot.

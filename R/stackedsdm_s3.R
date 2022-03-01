@@ -36,10 +36,10 @@ fitted.stackedsdm <- function(object, ...) {
 #' Predictions from a stackedsdm object
 #'
 #' @param object An object of class \code{stackedsdm}
-#' @param newdata Pptionally, a data frame in which to look for variables with which to predict.  If omitted, the covariates from the existing dataset are used.
-#' @param type The type of prediction required.  This can be supplied as either a single character string, when is applied to all species, or a vector of character strings of the same length as \code{ncol(object$y)} specifying the type of predictions desired for each species. The exact type of prediction allowed depends precisely on the distribution, but for many there is at least `"link"' which is on the scale of the linear predictors, and ‘"response"’ which is on the scale of the response variable. The values of this argument can be abbreviated.
+#' @param newdata Optionally, a data frame in which to look for variables with which to predict.  If omitted, the covariates from the existing dataset are used.
+#' @param type The type of prediction required.  This can be supplied as either a single character string, when is applied to all species, or a vector of character strings of the same length as \code{ncol(object$y)} specifying the type of predictions desired for each species. The exact type of prediction allowed depends precisely on the distribution, but for many there is at least \code{"link"} which is on the scale of the linear predictors, and \code{"response"} which is on the scale of the response variable. The values of this argument can be abbreviated.
 #' @param se.fit Logical switch indicating if standard errors are required.
-#' @param na.action Function determining what should be done with missing values in '"newdata"'. The default is to predict \code{NA}..
+#' @param na.action Function determining what should be done with missing values in \code{newdata}. The default is to predict \code{NA}..
 #' @param ... not used
 #' @section Details:
 #'  This function simply applies a for loop, cycling through each fitted model from the \code{stackedsdm} object and then attempting to construct the relevant predictions by applying the relevant \code{predict} method. Please keep in mind no formatting is done to the predictions.

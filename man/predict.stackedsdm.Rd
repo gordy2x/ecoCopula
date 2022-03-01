@@ -16,13 +16,13 @@
 \arguments{
 \item{object}{An object of class \code{stackedsdm}}
 
-\item{newdata}{Pptionally, a data frame in which to look for variables with which to predict.  If omitted, the covariates from the existing dataset are used.}
+\item{newdata}{Optionally, a data frame in which to look for variables with which to predict.  If omitted, the covariates from the existing dataset are used.}
 
-\item{type}{The type of prediction required.  This can be supplied as either a single character string, when is applied to all species, or a vector of character strings of the same length as \code{ncol(object$y)} specifying the type of predictions desired for each species. The exact type of prediction allowed depends precisely on the distribution, but for many there is at least `"link"' which is on the scale of the linear predictors, and ‘"response"’ which is on the scale of the response variable. The values of this argument can be abbreviated.}
+\item{type}{The type of prediction required.  This can be supplied as either a single character string, when is applied to all species, or a vector of character strings of the same length as \code{ncol(object$y)} specifying the type of predictions desired for each species. The exact type of prediction allowed depends precisely on the distribution, but for many there is at least \code{"link"} which is on the scale of the linear predictors, and \code{"response"} which is on the scale of the response variable. The values of this argument can be abbreviated.}
 
 \item{se.fit}{Logical switch indicating if standard errors are required.}
 
-\item{na.action}{Function determining what should be done with missing values in '"newdata"'. The default is to predict \code{NA}..}
+\item{na.action}{Function determining what should be done with missing values in \code{newdata}. The default is to predict \code{NA}..}
 
 \item{...}{not used}
 }

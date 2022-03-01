@@ -29,7 +29,7 @@
 
 \item{arrow}{should arrows be plotted for species loadings (default is TRUE)}
 
-\item{site.text}{should sites be labeled by rown names of data (default is FALSE, points are drawn)}
+\item{site.text}{should sites be labeled by row names of data (default is FALSE, points are drawn)}
 
 \item{labels}{the labels for sites and species (for biplots only) (default is data labels)}
 
