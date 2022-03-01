@@ -6,7 +6,22 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+* checking CRAN incoming feasibility ... NOTE
+Found the following (possibly) invalid URLs:
+  URL: https://doi.org/10.1111/2041-210X.13247
+    From: inst/doc/the_basics.html
+    Status: 503
+    Message: Service Unavailable
+
+Found the following (possibly) invalid DOIs:
+  DOI: 10.1111/2041-210X.13247
+    From: inst/CITATION
+    Status: Service Unavailable
+    Message: 503
+
+The URL and DOI are valid and work in browser.
 
 ## revdepcheck results
 
