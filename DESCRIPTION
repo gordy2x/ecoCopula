@@ -24,6 +24,7 @@ Suggests:
     RColorBrewer,
     ggraph,
     labdsv,
-    tidygraph
+    tidygraph,
+    grDevices
 VignetteBuilder: knitr
 Config/testthat/edition: 3

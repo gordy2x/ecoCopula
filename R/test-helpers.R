@@ -4,8 +4,8 @@
 save_png <- function(code, width = 400, height = 400) {
   path <- tempfile(fileext = ".png")
   set.seed(5)
-  png(path, width = width, height = height)
-  on.exit(dev.off())
+  grDevices::png(path, width = width, height = height)
+  on.exit(grDevices::dev.off())
   code
   
   path
