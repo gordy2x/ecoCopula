@@ -1,14 +1,3 @@
-save_png <- function(code, width = 400, height = 400) {
-  path <- tempfile(fileext = ".png")
-  set.seed(5)
-  png(path, width = width, height = height)
-  on.exit(dev.off())
-  code
-  
-  path
-}
-
-
 test_that("plotting successfully", {
   X <- as.data.frame(spider$x)
   abund <- spider$abund 
