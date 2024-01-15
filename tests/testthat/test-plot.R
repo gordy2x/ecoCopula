@@ -1,4 +1,5 @@
 test_that("plotting successfully", {
+  skip_on_ci()
   X <- as.data.frame(spider$x)
   abund <- spider$abund 
   

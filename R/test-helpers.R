@@ -10,3 +10,6 @@ save_png <- function(code, width = 400, height = 400) {
   
   path
 }
+
+#' Output for tests 
+load("data/fixtures.RData")

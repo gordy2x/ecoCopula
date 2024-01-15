@@ -1,1 +1,0 @@
-load("fixtures.RData")

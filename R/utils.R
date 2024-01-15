@@ -171,7 +171,7 @@ check_object_family = function(object) {
 graph_from_partial<-function(partial){
     diag(partial)<-0
     vertex <- data.frame(name = colnames(partial))
-    Edges=igraph::as_data_frame(igraph::graph_from_adjacency_matrix(partial,mode="undirected",weighted = TRUE))
+    Edges=igraph::as_data_frame(igraph::graph_from_adjacency_matrix(partial,mode="max",weighted = TRUE))
     if(ncol(Edges)==3){
         colnames(Edges)[3]<- "partcor"
     }
