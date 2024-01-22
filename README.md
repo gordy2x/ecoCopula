@@ -22,4 +22,4 @@ For the development version with zero-inflated functionality:
 devtools::install_github("gordy2x/ecoCopula", ref="e401671")
 ```
 
-If you have trouble installing, please email me at [g.popovic@unsw.edu.au](mailto:g.popovic@unsw.edu.au)
+If you have trouble installing, please email me at [g.popovic@unsw.edu.au](mailto:g.popovic@unsw.edu.au).
