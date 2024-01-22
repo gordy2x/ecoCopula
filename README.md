@@ -1,4 +1,10 @@
-## ecoCopula [![Build Status](https://app.travis-ci.com/gordy2x/ecoCopula.svg)](https://app.travis-ci.com/gordy2x/ecoCopula) [![License](http://img.shields.io/badge/license-LGPL%20%28%3E=%202.1%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![DOI](https://zenodo.org/badge/139233335.svg)](https://zenodo.org/badge/latestdoi/139233335)
+## ecoCopula 
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/gordy2x/ecoCopula/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gordy2x/ecoCopula/actions/workflows/R-CMD-check.yaml)
+[![License](http://img.shields.io/badge/license-LGPL%20%28%3E=%202.1%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![DOI](https://zenodo.org/badge/139233335.svg)](https://zenodo.org/badge/latestdoi/139233335)
+[![Codecov test coverage](https://codecov.io/gh/gordy2x/ecoCopula/branch/master/graph/badge.svg)](https://app.codecov.io/gh/gordy2x/ecoCopula?branch=master)
+<!-- badges: end -->
+
 
 R package to find direct and indirect species associations from co-occurrence data
 
